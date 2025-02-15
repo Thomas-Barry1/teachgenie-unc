@@ -1,0 +1,60 @@
+<!-- src/app/shared/print-button/print-button.component.html -->
+<div class="button-group">
+  <!-- <button mat-raised-button color="primary" (click)="print()">Print</button> -->
+  <button
+    *ngIf="enablePdf"
+    mat-raised-button
+    color="primary"
+    (click)="saveAsPdf()"
+    class="mx-2"
+  >
+    Save as PDF
+    <mat-icon
+      aria-hidden="false"
+      aria-label="Kahoot creator icon"
+      fontIcon="download"
+    ></mat-icon>
+  </button>
+  <button
+    *ngIf="enableTextFile"
+    mat-raised-button
+    color="primary"
+    (click)="saveAsTextFile()"
+    class="mx-2"
+  >
+    <mat-icon
+      aria-hidden="false"
+      aria-label="Kahoot creator icon"
+      fontIcon="download"
+    ></mat-icon>
+    Save as Text File
+  </button>
+  <button
+    *ngIf="enableClipboard"
+    mat-raised-button
+    color="primary"
+    (click)="copyToClipboard()"
+    class="mx-2"
+  >
+    <mat-icon
+      aria-hidden="false"
+      aria-label="Kahoot creator icon"
+      fontIcon="download"
+    ></mat-icon>
+    Copy to Clipboard
+  </button>
+  <button
+    *ngIf="enableKahoot"
+    mat-raised-button
+    color="primary"
+    (click)="saveAsCsv()"
+    class="mx-2"
+  >
+    <mat-icon
+      aria-hidden="false"
+      aria-label="Kahoot creator icon"
+      fontIcon="download"
+    ></mat-icon>
+    Save to Spreadsheet
+  </button>
+</div>

@@ -1,0 +1,78 @@
+<!-- Additional Options Below the Topic -->
+<div class="optional-fields" [formGroup]="parentFormGroup">
+  <mat-form-field appearance="outline" *ngIf="showNumberOfQuestions">
+    <mat-label>Number of Questions</mat-label>
+    <input
+      matInput
+      formControlName="numberOfQuestions"
+      placeholder="Enter number of questions"
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" *ngIf="showGradeLevel">
+    <mat-label>Grade Level</mat-label>
+    <mat-select formControlName="gradeLevel">
+      @for (type of gradeLevels; track type) {
+      <mat-option [value]="type">{{ type }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" *ngIf="showCommonCoreStandards">
+    <mat-label>Common Core Standards</mat-label>
+    <input
+      matInput
+      formControlName="commonCoreStandards"
+      placeholder="Enter common core standard"
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" *ngIf="showSkills">
+    <mat-label>Skills</mat-label>
+    <input
+      matInput
+      formControlName="skills"
+      placeholder="Enter skills being worked on."
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" *ngIf="showQuestionTypes">
+    <mat-label>Question Type</mat-label>
+    <mat-select formControlName="questionType" multiple>
+      <!-- <mat-option *ngFor="let type of questionTypes" [value]="type">
+        {{ type }}
+      </mat-option> -->
+      <!-- <mat-select> -->
+      @for (type of questionTypes; track type) {
+      <mat-option [value]="type">{{ type }}</mat-option>
+      }
+      <!-- </mat-select> -->
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" *ngIf="showState">
+    <mat-label>State</mat-label>
+    <mat-select
+      formControlName="state"
+      [value]="selectedStateAbbreviation"
+      (selectionChange)="onStateChange($event)"
+    >
+      <!-- Search Input inside the Dropdown -->
+      <mat-option>
+        <input
+          matInput
+          placeholder="Search state..."
+          (input)="filterStates()"
+        />
+      </mat-option>
+
+      <!-- Filtered State Abbreviations -->
+      <mat-option
+        *ngFor="let state of filteredStates"
+        [value]="state.abbreviation"
+      >
+        {{ state.abbreviation }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
