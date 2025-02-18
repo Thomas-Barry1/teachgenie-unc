@@ -37,6 +37,7 @@ import { PrintButtonComponent } from './shared/print-button/print-button.compone
 import { FormOptionsComponent } from './shared/form-options/form-options.component';
 import { LoginComponent } from './login/login.component';
 import { FooterComponent } from './shared/footer/footer.component';
+import { GapAssessmentComponent } from './gap-assessment/gap-assessment.component';
 
 @NgModule({ declarations: [
         AppComponent,
@@ -45,7 +46,8 @@ import { FooterComponent } from './shared/footer/footer.component';
         HomePageComponent,
         PrintButtonComponent,
         FormOptionsComponent,
-        FooterComponent
+        FooterComponent,
+        GapAssessmentComponent
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
         AppRoutingModule,

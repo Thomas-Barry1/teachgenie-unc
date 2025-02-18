@@ -43,6 +43,11 @@ async def google_auth(info: dict):
     print("Auth info: ", info)
     return True
 
+# Generateing Gap Assessment
+@app.post("/api/gap-assessment")
+async def google_auth(file: any):
+    print("Reched the backend api call: ", file)
+    return True
 
 # Load .env environment variables
 load_dotenv()
@@ -98,3 +103,7 @@ async def generate_test(request: FormRequest):
     else:
         returnResp = response.text
     return returnResp
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=3000)

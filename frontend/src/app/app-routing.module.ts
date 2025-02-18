@@ -5,11 +5,13 @@ import { HomePageComponent } from './home-page/home-page.component';
 import { LoginComponent } from './login/login.component';
 // Auth guard protects routes with authentication
 import { AuthGuard } from './auth.guard';
+import { GapAssessmentComponent } from './gap-assessment/gap-assessment.component';
 
 const routes: Routes = [
   { path: 'test-creator', component: TestCreatorComponent, canActivate: [AuthGuard] },
   { path: 'home', component: HomePageComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'gap-assessment',title:'Login', component: GapAssessmentComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full' } // Default route
 ];
 

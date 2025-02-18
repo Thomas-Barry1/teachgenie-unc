@@ -1,0 +1,14 @@
+<mat-card>
+  <h2>Analyze gap results</h2>
+  <div *ngIf="!selectedFile">Upload PDF</div>
+  <div *ngIf="selectedFile">{{ selectedFile.name }}</div>
+  <input type="file" (change)="onFileSelected($event)" />
+  <button
+    *ngIf="selectedFile"
+    mat-raised-button
+    color="primary"
+    (click)="createGapAssessment()"
+  >
+    Analyze file and generate gap assessment
+  </button>
+</mat-card>
