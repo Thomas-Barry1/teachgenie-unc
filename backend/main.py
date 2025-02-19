@@ -1,5 +1,5 @@
 from typing import List, Optional, Union
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI, Form, Request, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import requests
@@ -43,12 +43,73 @@ async def google_auth(info: dict):
     print("Auth info: ", info)
     return True
 
+import csv
+from io import StringIO
+from typing import Dict
+
 # Generateing Gap Assessment
 @app.post("/api/gap-assessment")
-async def google_auth(file: any):
-    print("Reched the backend api call: ", file)
-    return True
+async def extract_csv_file(file: UploadFile = File(...)):
+    print("Reached the backend API call:", file.filename)
+    
+    file_contents = await file.read()
+    decoded_contents = file_contents.decode("utf-8-sig")  # utf-8-sig removes the \ufeff at the start of the file.
+    
+    csv_file = StringIO(decoded_contents)
+    reader = csv.DictReader(csv_file)
+    
+    extracted_information = {}
+    
+    for row in reader:
+        print(row.keys())
+        student_name = row["Student Name"]
+        student_scores = {}
+        
+        for column in row:
+            if column != "Student Name":
+                student_scores[column] = int(row[column])
+        
+        extracted_information[student_name] = student_scores
+    generated_gap_assessment = await generate_gap_assessment(extracted_information)
+    print("Printing the results from backend")
+    print(extracted_information, generated_gap_assessment)
+    return {"extracted_information": extracted_information, "generated_gap_assessment": generated_gap_assessment}
 
+
+async def generate_gap_assessment(extracted_information):
+    #Make the prompt to ask genai to create appropriate test
+    prompt = ''
+    print(extracted_information.keys())
+    print(extracted_information.values())
+    
+    for student_name, scores in extracted_information.items():
+        scores_str = ", ".join([f"{subject}: {score}" for subject, score in scores.items()])
+        prompt += (f"A teacher has a student named {student_name}, and they have the following assessments for their studies: {scores_str}. "
+                   f"Assuming these scores are out of 10, can you create a plan and tell us which skills are the weakest for {student_name} "
+                   f"and create plans on how they can improve?\n")
+    
+    print(f"Prompt to be passed to genai: {prompt}")
+
+    response = model.generate_content(prompt)
+    print("Test response: ", response)
+    # Only iterate 5 or more times if a bad response is received
+    numIterations = 0
+    isValidResp = False
+    while not isValidResp and numIterations < 5:
+        try:
+            response.text
+            isValidResp = True
+        except:
+            numIterations += 1
+            print("Regenerate response")
+            response = model.generate_content(prompt)
+            print("Test response: ", response)
+    if numIterations == 5:
+        returnResp = "Error in AI response, try again or change request."
+    else:
+        returnResp = response.text
+    return returnResp
+    
 # Load .env environment variables
 load_dotenv()
 

@@ -1,6 +1,6 @@
 <mat-card>
   <h2>Analyze gap results</h2>
-  <div *ngIf="!selectedFile">Upload PDF</div>
+  <div *ngIf="!selectedFile">Upload File</div>
   <div *ngIf="selectedFile">{{ selectedFile.name }}</div>
   <input type="file" (change)="onFileSelected($event)" />
   <button
@@ -11,4 +11,25 @@
   >
     Analyze file and generate gap assessment
   </button>
+
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Generating assessment, please wait...</p>
+  </div>
+
+  <div *ngIf="!loading && gap_assessment" id="gap_assessment">
+    <div
+      [innerHTML]="gap_assessment"
+      #dataToExport
+      contenteditable="true"
+    ></div>
+    <app-print-button
+      [contentToPrint]="gap_assessmentString"
+      [enablePdf]="true"
+      [enableTextFile]="false"
+      [enableClipboard]="true"
+      [textElement]="dataToExport"
+    >
+    </app-print-button>
+  </div>
 </mat-card>

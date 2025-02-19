@@ -17,7 +17,8 @@ export class ApiService {
     return this.http.post<any>(`${this.apiUrl}/test`, topic);
   }
 
-  generateGapAssessment(file: File | null) : Observable<any>{
+  generateGapAssessment(file: FormData | null) : Observable<any>{
+    console.log("In the service");
     return this.http.post<any>(`${this.apiUrl}/gap-assessment`, file);
   }
 
