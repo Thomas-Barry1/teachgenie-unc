@@ -42,6 +42,14 @@
         </div>
       </a>
     </li>
+    <li>
+      <a routerLink="/gap-assessment" routerLinkActive="active-link">
+        <div class="menu-item">
+          <mat-icon aria-hidden="false" fontIcon="analytics"></mat-icon>
+          <span>Gap Assessment</span>
+        </div>
+      </a>
+    </li>
     <div class="profile" *ngIf="user">
       <img [src]="user.photoUrl" alt="Profile picture" />
       <span>{{ user.name }}</span>

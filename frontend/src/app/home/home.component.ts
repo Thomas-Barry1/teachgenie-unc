@@ -8,22 +8,21 @@ import { ActivatedRoute, Router } from '@angular/router';
   // standalone: true,
   // imports: [],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrl: './home.component.css',
 })
-export class HomeComponent implements OnInit{
+export class HomeComponent implements OnInit {
+  user: SocialUser | undefined; // SocialUser is either an object or undefined
 
-  user: SocialUser | undefined;  // SocialUser is either an object or undefined
-
-  constructor( private authService: AuthService, private route: ActivatedRoute) {
+  constructor(private authService: AuthService, private route: ActivatedRoute) {
     // Subscribe to the user observable from AuthService
-    this.authService.user$.subscribe(user => {
+    this.authService.user$.subscribe((user) => {
       // Get user info
-      console.log("Inside home component ngOninit subscribe");
-      this.user = user;  // Update the user information when it changes
+      console.log('Inside home component ngOninit subscribe');
+      this.user = user; // Update the user information when it changes
     });
 
     // Initialize with the current user info if already logged in
-    console.log("Default in ngOnit");
+    console.log('Default in ngOnit');
     this.user = this.authService.getUserInfo();
     // Initialize auth service
     this.route.url.subscribe((event) => {
@@ -40,6 +39,5 @@ export class HomeComponent implements OnInit{
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 }

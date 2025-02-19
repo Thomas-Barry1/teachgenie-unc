@@ -11,12 +11,12 @@ import { StateService } from '../services/state.service';
   // standalone: true,
   // imports: [FormOptionsComponent],
   templateUrl: './test-creator.component.html',
-  styleUrl: './test-creator.component.css'
+  styleUrl: './test-creator.component.css',
 })
 export class TestCreatorComponent {
   testForm: FormGroup;
   test: SafeHtml = '';
-  testString = ''
+  testString = '';
   loading: boolean = false;
   editTest: boolean = false;
   questionTypes: string[] = [''];
@@ -24,7 +24,12 @@ export class TestCreatorComponent {
   @ViewChild('dataToExport', { static: false })
   public dataToExport!: ElementRef;
 
-  constructor(private fb: FormBuilder, private apiService: ApiService, private markdownService: MarkdownService, private stateService: StateService) {
+  constructor(
+    private fb: FormBuilder,
+    private apiService: ApiService,
+    private markdownService: MarkdownService,
+    private stateService: StateService
+  ) {
     this.testForm = this.fb.group({
       topic: [''],
       numberOfQuestions: [''],
@@ -32,7 +37,7 @@ export class TestCreatorComponent {
       commonCoreStandards: [''],
       skills: [''],
       questionType: [this.questionTypes],
-      state: ['']
+      state: [''],
     });
 
     // Load existing data if available
@@ -42,18 +47,21 @@ export class TestCreatorComponent {
   generateTest(): void {
     this.loading = true;
     const formData = this.testForm.value;
-    this.apiService.generateTest(formData).subscribe(async response => {
-      console.log("AI response: ", response);
-      this.testString = await this.markdownService.convertHtml(response.test);
-      console.log("HTML of Response: ", this.testString);
-      this.test = await this.markdownService.convert(response.test);
-      console.log("Test response: ", this.test);
-      this.stateService.setTestData(this.test);
-      this.loading = false;
-    }, error => {
-      console.error('Error generating test', error);
-      this.loading = false;
-    });
+    this.apiService.generateTest(formData).subscribe(
+      async (response) => {
+        console.log('AI response: ', response);
+        this.testString = await this.markdownService.convertHtml(response.test);
+        console.log('HTML of Response: ', this.testString);
+        this.test = await this.markdownService.convert(response.test);
+        console.log('Test response: ', this.test);
+        this.stateService.setTestData(this.test);
+        this.loading = false;
+      },
+      (error) => {
+        console.error('Error generating test', error);
+        this.loading = false;
+      }
+    );
   }
 
   // Method to handle user edits
@@ -64,13 +72,13 @@ export class TestCreatorComponent {
   saveTest() {
     this.editTest = false;
 
-    const editedHtml = this.dataToExport.nativeElement.innerHTML
+    const editedHtml = this.dataToExport.nativeElement.innerHTML;
     // TODO: sanitize updated HTML to ensure safety
     this.test = editedHtml;
     this.stateService.setTestData(editedHtml);
 
     // Convert sanitized HTML to markdown
     this.testString = editedHtml.toString();
-    console.log("New test string: ", this.testString);
-    }
+    console.log('New test string: ', this.testString);
+  }
 }

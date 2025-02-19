@@ -1,84 +1,84 @@
 /* src/app/components/home/home.component.css */
 .home-card {
-    margin: 20px;
-    padding: 20px;
-  }
-  
-  .header {
-    text-align: center;
-    margin-bottom: 1em;
-  }
-  
-  .header h1 {
-    font-size: 2.5em;
-    margin-bottom: 1em;
-    margin-top: 1em;
-    line-height: 1.3em;
-    font-weight: 700;
-  }
+  margin: 20px;
+  padding: 20px;
+}
 
-  .header h1 span {
-    color: var(--color-primary);
-  }
+.header {
+  text-align: center;
+  margin-bottom: 1em;
+}
 
-  .header p span {
-    color: var(--color-primary);
-    font-weight: bold;
-  }
-  
-  .header p {
-    font-size: 1.2em;
-    margin-bottom: 7%;
-    margin-top: 6%;
-    font-weight: 400;
-  }
+.header h1 {
+  font-size: 2.5em;
+  margin-bottom: 1em;
+  margin-top: 1em;
+  line-height: 1.3em;
+  font-weight: 700;
+}
 
-  .header button {
-    font-weight: 600;
-  }
-  
-  .features {
-    text-align: center;
-    margin-top: 8%;
-  }
-  
-  .feature-list {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
-  }
-  
-  .feature-item {
-    text-align: center;
-    max-width: 200px;
-  }
-  
-  .feature-item mat-icon {
-    font-size: 3em;
-    margin-bottom: 10px;
-    width: 100%;
-    height: fit-content;
-  }
+.header h1 span {
+  color: var(--color-primary);
+}
 
-  .testimonials {
-    text-align: center;
-    margin-top: 10%;
-    animation: fadeInUp 1s ease-in-out;
-  }
+.header p span {
+  color: var(--color-primary);
+  font-weight: bold;
+}
 
-  .testimonials h2{
-    margin-top: .5em;
-  }
-  
-  .spacer {
-    flex: 1 1 auto;
-  }
+.header p {
+  font-size: 1.2em;
+  margin-bottom: 7%;
+  margin-top: 6%;
+  font-weight: 400;
+}
+
+.header button {
+  font-weight: 600;
+}
+
+.features {
+  text-align: center;
+  margin-top: 8%;
+}
+
+.feature-list {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.feature-item {
+  text-align: center;
+  max-width: 200px;
+}
+
+.feature-item mat-icon {
+  font-size: 3em;
+  margin-bottom: 10px;
+  width: 100%;
+  height: fit-content;
+}
+
+.testimonials {
+  text-align: center;
+  margin-top: 10%;
+  animation: fadeInUp 1s ease-in-out;
+}
+
+.testimonials h2 {
+  margin-top: 0.5em;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
 
 /**************************************************************************** 
 * Container showcasing sample ai generated pdfs
 ****************************************************************************/
 
-  /* Container setup */
+/* Container setup */
 .container {
   max-width: 1200px;
   margin: 10% auto 5% auto;
@@ -170,13 +170,11 @@
   background-color: #0056b3;
 }
 
-
 /**************************************************************************** 
 Responsiveness
 ****************************************************************************/
-  
 
- @media only screen and (max-width: 600px) {
+@media only screen and (max-width: 600px) {
   .feature-list {
     flex-direction: column;
     align-items: center;
@@ -195,4 +193,3 @@ Responsiveness
     padding: auto;
   }
 }
-  

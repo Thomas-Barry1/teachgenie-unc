@@ -1,145 +1,144 @@
 /* Reset styles */
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-  /************************************************
+/************************************************
   Navbar
   ************************************************/
-  .nav-spacer {
-    flex: 1 1 auto;
-  }
-  
-  .navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #007bff;
-    padding: 10px 20px;
-    color: #ffffff;
-    position: sticky;
-    top: 0px;
-    z-index: 1000;
-  }
-  
-  .navbar-brand {
-    display: flex;
-    align-items: center;
-  }
-  
-  img {
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
-  }
-  
-  .navbar-brand span {
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-  
-  .hamburger {
-    display: none;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .hamburger mat-icon {
-    display: block;
-    color: #0b0b0f;
-    transition: all 0.3s ease;
-  }
-  
-  /* Navigation Links */
-  nav ul {
-    display: flex;
-    list-style: none;
-    align-items: center;
-  }
-  
-  nav ul li {
-    margin-left: 20px;
-  }
-  
-  nav ul li a {
-    text-decoration: none;
-    color: #ffffff;
-    font-size: 1rem;
-    transition: color 0.3s ease;
-  }
-  
-  nav ul li a:hover {
-    color: #cce7ff;
-  }
+.nav-spacer {
+  flex: 1 1 auto;
+}
 
-  .menu-item {
-    display: flex;
-    align-items: center;
-  }
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #3f51b5;
+  padding: 10px 20px;
+  color: #ffffff;
+  position: sticky;
+  top: 0px;
+  z-index: 1000;
+}
 
-  .menu-item mat-icon {
-    margin-right: .1em;
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
+img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.navbar-brand span {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.hamburger mat-icon {
+  display: block;
+  color: #0b0b0f;
+  transition: all 0.3s ease;
+}
+
+/* Navigation Links */
+nav ul {
+  display: flex;
+  list-style: none;
+  align-items: center;
+}
+
+nav ul li {
+  margin-left: 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+  color: #cce7ff;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+}
+
+.menu-item mat-icon {
+  margin-right: 0.1em;
 }
 
 .profileWithDivide {
-    display: flex;
+  display: flex;
 }
 
 nav .profile {
-    display: flex;
-    align-items: center;
-    margin-left: 20px;
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
 }
-  
-  /* Responsive Styles */
-  @media (max-width: 972px) {
-    .hamburger {
-      display: flex;
-    }
 
-    .navbar{
-        flex-direction: column;
-        align-items: normal;
-    }
-
-    .nav-spacer {
-        flex: 1 1 auto;
-      }
-
-    .first-row{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-  
-    nav ul {
-      width: 100%;
-      background-color: #007bff;
-      flex-direction: column;
-      align-items: normal;
-      padding: 20px 0;
-      margin-left: 0px;
-    }
-  
-    nav ul.hidden {
-      /* display: flex; */
-      display: none;
-    }
-  
-    nav ul li {
-      margin: 10px 5px;
-    }
-
-    .menu-item mat-icon {
-        margin-right: .4em;
-    }
-
-    nav .profile{
-        margin-left: 0px;
-        margin-top: 10px;
-    }
+/* Responsive Styles */
+@media (max-width: 972px) {
+  .hamburger {
+    display: flex;
   }
-  
+
+  .navbar {
+    flex-direction: column;
+    align-items: normal;
+  }
+
+  .nav-spacer {
+    flex: 1 1 auto;
+  }
+
+  .first-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  nav ul {
+    width: 100%;
+    background-color: #3f51b5;
+    flex-direction: column;
+    align-items: normal;
+    padding: 20px 0;
+    margin-left: 0px;
+  }
+
+  nav ul.hidden {
+    /* display: flex; */
+    display: none;
+  }
+
+  nav ul li {
+    margin: 10px 5px;
+  }
+
+  .menu-item mat-icon {
+    margin-right: 0.4em;
+  }
+
+  nav .profile {
+    margin-left: 0px;
+    margin-top: 10px;
+  }
+}
