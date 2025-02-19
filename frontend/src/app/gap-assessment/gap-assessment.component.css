@@ -10,3 +10,9 @@ h2 {
 .mx-2 {
   margin: 10px;
 }
+
+.dimmed {
+  opacity: 0.5; /* Make it look faded */
+  pointer-events: auto; /* Keep it clickable */
+  transition: opacity 0.3s ease-in-out;
+}
