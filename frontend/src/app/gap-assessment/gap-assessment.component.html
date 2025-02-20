@@ -12,3 +12,18 @@
     Analyze file and generate gap assessment
   </button>
 </mat-card>
+<mat-card>
+  <h2>Create Test</h2>
+  <form [formGroup]="gapTestForm" (ngSubmit)="createGapTest()">
+    <app-form-options
+    [parentFormGroup]="gapTestForm"
+    [showNumberOfQuestions]="false"
+    [showCommonCoreStandards]="false"
+    [showSkills]="false"
+    [showQuestionTypes]="false"
+    ></app-form-options>
+    <button mat-raised-button color=“primary” type=“submit”>Begin</button>
+  </form>
+  <!-- Add loading mat spinner logic here-->
+  <!--Add save activities button here-->
+</mat-card>

@@ -5,6 +5,7 @@ from pydantic import BaseModel
 import requests
 import google.generativeai as genai
 import os
+import uvicorn
 from dotenv import load_dotenv
 
 app = FastAPI()
@@ -43,19 +44,29 @@ async def google_auth(info: dict):
     print("Auth info: ", info)
     return True
 
-# Generateing Gap Assessment
-@app.post("/api/gap-assessment")
-async def google_auth(file: any):
-    print("Reched the backend api call: ", file)
-    return True
+
+# Generating Gap Assessment
+#@app.post("/api/gap-assessment")
+#async def google_auth(file: any):
+ #   print("Reched the backend api call: ", file)
+  #  return True
 
 # Load .env environment variables
 load_dotenv()
+
+api_key = os.getenv("API_KEY")
+
+if not api_key: 
+    raise ValueError("API_KEY is missing")
 
 genai.configure(api_key=os.environ["API_KEY"])
 
 # Different models: https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models
 model = genai.GenerativeModel('gemini-1.5-flash')
+
+async def generate_gap_test(request: FormRequest):
+    print("Reached the backend api: call")
+    return True
 
 async def generate_test(request: FormRequest):
     # Construct the prompt based on user input

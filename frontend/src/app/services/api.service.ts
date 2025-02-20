@@ -21,6 +21,11 @@ export class ApiService {
     return this.http.post<any>(`${this.apiUrl}/gap-assessment`, file);
   }
 
+  generateGapTest(formData: any): Observable<any> {
+    return this.http.post<any>('${this.apiUrl}/gap-test', formData);
+  }
+
+
   // Send auth info to the backend
   sendAuthInfoToBackend(user: any): Observable<any> {
     console.log("Made it to sendAuthInfoToBackend");
