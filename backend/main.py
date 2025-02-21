@@ -46,10 +46,10 @@ async def google_auth(info: dict):
 
 
 # Generating Gap Assessment
-#@app.post("/api/gap-assessment")
-#async def google_auth(file: any):
- #   print("Reched the backend api call: ", file)
-  #  return True
+@app.post("/api/gap-test")
+async def google_auth(file: dict):
+   print("Reached the backend api call: ", file)
+   return True
 
 # Load .env environment variables
 load_dotenv()

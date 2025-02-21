@@ -22,7 +22,7 @@ export class ApiService {
   }
 
   generateGapTest(formData: any): Observable<any> {
-    return this.http.post<any>('${this.apiUrl}/gap-test', formData);
+    return this.http.post<any>(`${this.apiUrl}/gap-test`, formData);
   }
 
 
