@@ -47,7 +47,7 @@ async def google_auth(info: dict):
 
 # Generating Gap Assessment
 @app.post("/api/gap-test")
-async def google_auth(file: dict):
+async def gap_test(file: dict):
    print("Reached the backend api call: ", file)
    return True
 
