@@ -240,4 +240,13 @@ export class GapAssessmentComponent {
 
     this.createStudentChart(studentName);
   }
+
+  applySearchFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.filter === '') {
+      this.dataSource.filter = '';
+    }
+  }
 }
