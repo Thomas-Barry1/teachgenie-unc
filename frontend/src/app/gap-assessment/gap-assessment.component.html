@@ -15,14 +15,15 @@
 <mat-card>
   <h2>Create Test</h2>
   <form [formGroup]="gapTestForm" (ngSubmit)="createGapTest()">
+    <mat-form-field appearance="fill">
+      <mat-label>Topic</mat-label>
+      <input matInput formControlName="topic" />
+    </mat-form-field>
     <app-form-options
     [parentFormGroup]="gapTestForm"
-    [showNumberOfQuestions]="false"
-    [showCommonCoreStandards]="false"
-    [showSkills]="false"
-    [showQuestionTypes]="false"
+    [showQuestionTypes]="true"
     ></app-form-options>
-    <button mat-raised-button color=“primary” type=“submit”>Begin</button>
+    <button mat-raised-button color=“primary” type=“submit” (onClick)="beginTest()">Begin Test</button>
   </form>
   <!-- Add loading mat spinner logic here-->
   <!--Add save activities button here-->

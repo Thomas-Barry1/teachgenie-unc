@@ -12,15 +12,22 @@ import { SafeHtml } from '@angular/platform-browser';
   styleUrl: './gap-assessment.component.css'
 })
 export class GapAssessmentComponent {
+
   selectedFile: File | null = null;
   gapTestForm: FormGroup<any>;
   gapTest: SafeHtml = ''
   loading: boolean = false; 
+  testActive: boolean = false; 
 
   constructor(private apiService: ApiService, private fb: FormBuilder, private stateService: StateService,
     private markdownService: MarkdownService){
     this.gapTestForm = this.fb.group({
+      topic: [''],
+      numberOfQuestions: [''],
       gradeLevel: [''],
+      commonCoreStandards: [''],
+      skills: [''],
+      questionType: [''],
       state: ['']
       //may need to add more fields here, subject, county etc.
     });
@@ -60,5 +67,13 @@ export class GapAssessmentComponent {
         this.loading = false;
       }
     });
+  }
+
+  beginTest() {
+      this.testActive = true; 
+    }
+
+  finishTest() {
+    this.testActive = false;
   }
 }
