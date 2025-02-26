@@ -5,9 +5,11 @@ from pydantic import BaseModel
 import requests
 import google.generativeai as genai
 import os
+import uvicorn
 from dotenv import load_dotenv
 
 app = FastAPI()
+
 
 app.add_middleware(
     CORSMiddleware,

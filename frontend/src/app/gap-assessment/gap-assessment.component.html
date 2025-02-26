@@ -85,7 +85,15 @@
 
 <mat-card>
   <h2>
-    {{ selectedSubject == null ? selectedStudent : selectedSubject }}
+    {{
+      displayedChart === ChartType.student
+        ? "Student"
+        : displayedChart === ChartType.subject
+        ? "Subject"
+        : displayedChart === ChartType.mean
+        ? "Average"
+        : ""
+    }}
     Performance Chart
   </h2>
   <div
@@ -100,8 +108,7 @@
         appearance="fill"
         style="width: 20vw; height: 80px; border: none"
         [ngStyle]="{
-          opacity:
-            selectedSubject === null && selectedStudent !== null ? '0.5' : '1'
+          opacity: displayedChart === ChartType.subject ? '1' : '0.5'
         }"
       >
         <mat-label>Select Subject</mat-label>
@@ -116,8 +123,7 @@
       <mat-form-field
         appearance="fill"
         [ngStyle]="{
-          opacity:
-            selectedStudent === null && selectedSubject !== null ? '0.5' : '1'
+          opacity: displayedChart === ChartType.student ? '1' : '0.5'
         }"
       >
         <mat-label>Select Student</mat-label>
@@ -128,6 +134,17 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+      <h2 style="text-align: center">OR</h2>
+      <button
+        class="meanButton"
+        mat-button
+        [ngStyle]="{
+          opacity: displayedChart === ChartType.mean ? '1' : '0.5',
+        }"
+        (click)="selectMeans()"
+      >
+        Average Performance
+      </button>
     </div>
   </div>
 </mat-card>

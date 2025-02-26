@@ -41,6 +41,8 @@ export enum SubjectLabel {
 export enum ChartType {
   student = 'Student',
   subject = 'Subject',
+  mean = 'Mean',
+  initial = '',
 }
 
 // Dummy Data
@@ -108,6 +110,9 @@ export class GapAssessmentComponent {
   private _liveAnnouncer = inject(LiveAnnouncer);
 
   dataSource = new MatTableDataSource(STUDENT_DATA);
+
+  displayedChart: ChartType = ChartType.initial;
+  ChartType = ChartType;
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator)
@@ -213,7 +218,52 @@ export class GapAssessmentComponent {
     });
   }
 
+  createMeanPerformanceChart() {
+    const canvas = document.getElementById('chart') as HTMLCanvasElement;
+
+    if (this.chart) {
+      this.chart.destroy(); // Destroy the previous chart instance
+    }
+
+    const subjects = Object.keys(SubjectLabel); // ['Fractions', 'Algebra', 'Geometry']
+    const subjectMeans = subjects.map((subject) => {
+      const total = this.students.reduce(
+        (sum: number, student: StudentPerformance) =>
+          sum + Number(student[subject as keyof StudentPerformance]),
+        0
+      );
+      return total / this.students.length;
+    });
+
+    this.chart = new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: subjects,
+        datasets: [
+          {
+            label: 'Average Performance',
+            data: subjectMeans,
+            backgroundColor: '#3f51b5',
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 5,
+            ticks: {
+              stepSize: 1,
+            },
+          },
+        },
+      },
+    });
+  }
+
   onSubjectChange(subject: SubjectLabel | null) {
+    this.displayedChart = ChartType.subject;
     this.selectedSubject = subject;
 
     this.selectedStudent = null;
@@ -226,7 +276,15 @@ export class GapAssessmentComponent {
     this.createSubjectChart(subject);
   }
 
+  selectMeans() {
+    this.displayedChart = ChartType.mean;
+    this.selectedSubject = null;
+    this.selectedStudent = null;
+    this.createMeanPerformanceChart();
+  }
+
   onStudentChange(studentName: string | null) {
+    this.displayedChart = ChartType.student;
     this.selectedStudent = studentName;
 
     this.selectedSubject = null;
