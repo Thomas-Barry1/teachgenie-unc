@@ -10,13 +10,17 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './active-test.component.css'
 })
 export class ActiveTestComponent {
-  @Input() questions: any[] = ['Example question 1', 'Example question 2','Example question 3']; //receives questions from parent (GapAssessmentComponent)
+  @Input() questions: any[] = ['Example question 1'] //receives real questions from parent (GapAssessmentComponent)
   currentQuestionIndex: number = 0;
-  timeRemaining: number = 1800; // need to either add time as an input/create a formula based on # of questions
+  selectedAnswerIndex: number | null = null;
+  selectedAnswers: any[] = [] // TO DO: figure out how to store state of answers (backend perhaps or as local array)
+  
+  timeRemaining: number = 1800; // TO DO: create formula that calculates time or add it as input
   interval: any; 
-  testStages = ['user-info', 'questions', 'completion'];
+  //testStages = ['user-info', 'questions', 'completion'];
   currentStage = ''
   userInfoForm: FormGroup; // TO DO: connect data to backend 
+  
 
   constructor(private fb: FormBuilder) {
     this.userInfoForm = this.fb.group({
@@ -24,11 +28,11 @@ export class ActiveTestComponent {
       lastName: [''],
       teacherCode: ['']
     });
-    this.currentStage = this.testStages[0];
+    this.currentStage = 'user-info'
   }
 
   onSubmitUserData() {
-    this.currentStage = this.testStages[1];
+    this.currentStage = 'questions'
     this.startTimer(); 
   }
 
@@ -39,8 +43,18 @@ export class ActiveTestComponent {
       this.currentQuestionIndex++;
     }
     else {
-      this.currentStage = this.testStages[2];
+      this.currentStage = 'completion'
     }
+  }
+
+  prevQuestion() {
+    if (this.currentQuestionIndex > 0) {
+      this.currentQuestionIndex--;
+    }
+  }
+
+  selectAnswer(index: number) {
+    this.selectedAnswerIndex = index;
   }
 
   startTimer() {
