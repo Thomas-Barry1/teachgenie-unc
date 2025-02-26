@@ -1,1 +1,39 @@
-<p>active-test works!</p>
+<div class="test-container">
+    <div class='user-info' *ngIf="currentStage === 'user-info'">
+        <h2 id="user-header">Enter Your Information</h2>
+        <form [formGroup]="userInfoForm" (ngSubmit)="onSubmitUserData()">
+          <mat-form-field appearance="fill">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="firstName" />
+          </mat-form-field>
+      
+          <mat-form-field appearance="fill">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="lastName" />
+          </mat-form-field>
+      
+          <mat-form-field appearance="fill">
+            <mat-label>Teacher Code</mat-label>
+            <input matInput formControlName="teacherCode" />
+          </mat-form-field>
+      
+          <button mat-raised-button color="primary" type="submit">Submit</button>
+        </form>
+    </div>
+    
+    <div class='questions' *ngIf="currentStage === 'questions'">
+        <div class='questions-header'>
+            <h2>Question {{ currentQuestionIndex + 1 }}</h2>
+            <h2>Time Remaining: {{ getFormattedTime() }} </h2>
+        </div>
+      
+        <button mat-raised-button color="primary" (click)="nextQuestion()">
+          {{ currentQuestionIndex < questions.length - 1 ? 'Next' : 'Finish' }}
+        </button>
+    </div>
+    
+    <div class='completion' *ngIf="currentStage === 'completion'">
+        <h2>Test Completed!</h2>
+        <p>Thank you for completing the test.</p>
+      </div>
+</div>

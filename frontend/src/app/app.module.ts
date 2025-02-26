@@ -38,6 +38,7 @@ import { FormOptionsComponent } from './shared/form-options/form-options.compone
 import { LoginComponent } from './login/login.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { GapAssessmentComponent } from './gap-assessment/gap-assessment.component';
+import { ActiveTestComponent } from "./active-test/active-test.component";
 
 @NgModule({ declarations: [
         AppComponent,
@@ -47,32 +48,33 @@ import { GapAssessmentComponent } from './gap-assessment/gap-assessment.componen
         PrintButtonComponent,
         FormOptionsComponent,
         FooterComponent,
-        GapAssessmentComponent
+        GapAssessmentComponent, 
+        ActiveTestComponent
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        ReactiveFormsModule,
-        MatCardModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatDividerModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatGridListModule,
-        MatSidenavModule,
-        MatProgressSpinnerModule,
-        MatOption,
-        MatSelectModule,
-        MatListModule,
-        BrowserModule,
-        SocialLoginModule,
-        // Primeng
-        CarouselModule,
-        ButtonModule,
-        TagModule,
-        LoginComponent], providers: [provideHttpClient(withInterceptorsFromDi()), provideAnimationsAsync(),
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatDividerModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatGridListModule,
+    MatSidenavModule,
+    MatProgressSpinnerModule,
+    MatOption,
+    MatSelectModule,
+    MatListModule,
+    BrowserModule,
+    SocialLoginModule,
+    // Primeng
+    CarouselModule,
+    ButtonModule,
+    TagModule,
+    LoginComponent], providers: [provideHttpClient(withInterceptorsFromDi()), provideAnimationsAsync(),
             {
                 provide: 'SocialAuthServiceConfig',
                 useValue: {

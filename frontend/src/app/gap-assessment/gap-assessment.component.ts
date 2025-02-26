@@ -15,9 +15,11 @@ export class GapAssessmentComponent {
 
   selectedFile: File | null = null;
   gapTestForm: FormGroup<any>;
-  gapTest: SafeHtml = ''
+  gapTest: SafeHtml = '';
+  gapTestName: String = '';
   loading: boolean = false; 
   testActive: boolean = false; 
+  questions: any[] = [];
 
   constructor(private apiService: ApiService, private fb: FormBuilder, private stateService: StateService,
     private markdownService: MarkdownService){
@@ -56,6 +58,13 @@ export class GapAssessmentComponent {
     this.apiService.generateGapTest(formData).subscribe({
       next: async (response: any) => {
         console.log('gap test created successfully:', response);
+        const topic = this.gapTestForm.get('topic')?.value
+        const state = this.gapTestForm.get('state')?.value;
+        const gradeLevel = this.gapTestForm.get('gradeLevel')?.value;
+        this.gapTestName = `${state} ${gradeLevel} Grade Level Standardized Test`
+
+        //this.questions = ... not sure the format of the response yet
+
         this.gapTest = await this.markdownService.convert(response.test);
         this.stateService.setTestData(this.gapTest); //allows to retain test preferences when switching tabs
       },
@@ -71,7 +80,8 @@ export class GapAssessmentComponent {
 
   beginTest() {
       this.testActive = true; 
-    }
+      this.createGapTest();
+  }
 
   finishTest() {
     this.testActive = false;

@@ -6,3 +6,16 @@ mat-card {
   mat-form-field {
     width: 100%;
   }
+
+  h1 {
+    color: #3f51b5;
+  }
+
+  h2 {
+    color: #3f51b5;
+  }
+
+  #test {
+    max-width: 800px;
+  }
+
