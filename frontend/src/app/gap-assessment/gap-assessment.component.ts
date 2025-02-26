@@ -37,6 +37,7 @@ export class GapAssessmentComponent {
       return;
     }
     console.log("Sending to backend");
+    this.loading = true;
     const formData = new FormData();
     formData.append("file", this.selectedFile);
     this.apiService.generateGapAssessment(formData).subscribe({
