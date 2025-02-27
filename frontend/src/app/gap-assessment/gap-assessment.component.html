@@ -20,9 +20,10 @@
       <input matInput formControlName="topic" />
     </mat-form-field>
     <app-form-options
-    [parentFormGroup]="gapTestForm"
-    [showQuestionTypes]="true"
-    ></app-form-options>
+  [parentFormGroup]="gapTestForm"
+  [showQuestionTypes]="true"
+  [testType]="'gap'"
+></app-form-options>
     <button mat-raised-button color=“primary” type=“submit”>Begin Test</button>
   </form>
   <!-- Add loading mat spinner logic here-->

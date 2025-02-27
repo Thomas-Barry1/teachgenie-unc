@@ -10,7 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './active-test.component.css'
 })
 export class ActiveTestComponent {
-  @Input() questions: any[] = ['Example question 1'] //receives real questions from parent (GapAssessmentComponent)
+  @Input() questions: any[] = ['Example question 1'] //TO DO: receives real questions from parent (GapAssessmentComponent)
   currentQuestionIndex: number = 0;
   selectedAnswerIndex: number | null = null;
   selectedAnswers: any[] = [] // TO DO: figure out how to store state of answers (backend perhaps or as local array)
