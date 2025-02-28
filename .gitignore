@@ -5,3 +5,4 @@
 # Stores secrets of google credentials
 google-auth*
 *.db__pycache__/
+node_modules/
