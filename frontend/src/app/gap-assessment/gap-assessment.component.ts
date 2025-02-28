@@ -17,9 +17,12 @@ export class GapAssessmentComponent {
   gapTestForm: FormGroup<any>;
   gapTest: SafeHtml = '';
   gapTestName: String = '';
+
   loading: boolean = false; 
   testActive: boolean = false; 
-  questions: any[] = [];
+  
+  questions: string[] = []; //not sure types yet
+  standards: string[] = []; //not sure types yet
 
   constructor(private apiService: ApiService, private fb: FormBuilder, private stateService: StateService,
     private markdownService: MarkdownService){
@@ -31,8 +34,10 @@ export class GapAssessmentComponent {
       skills: [''],
       questionType: [''],
       state: ['']
-      //may need to add more fields here, subject, county etc.
     });
+
+    // load existing data if available
+    this.gapTest = this.stateService.getTestData();
   };
 
   onFileSelected(event: Event) {
@@ -51,26 +56,47 @@ export class GapAssessmentComponent {
     console.log("returned from the backend call");
   }
 
-  createGapTest() {
-    this.loading = true;
-    const formData = this.gapTestForm.value;
-    
-    this.apiService.generateGapTest(formData).subscribe({
-      next: async (response: any) => {
-        console.log('gap test created successfully:', response);
-        const topic = this.gapTestForm.get('topic')?.value
-        const state = this.gapTestForm.get('state')?.value;
-        const gradeLevel = this.gapTestForm.get('gradeLevel')?.value;
-        this.gapTestName = `${state} ${gradeLevel} Grade Level Standardized Test`
+  getFormData(): any { // could define model for this
+    return this.gapTestForm.value;
+  }
 
-        //this.questions = ... not sure the format of the response yet
+  generateStandards() {
+    this.loading = true;
+    const formData = this.getFormData();
+
+    this.apiService.generateStandards(formData).subscribe({
+      next: (response: any) => {
+
+        // store the standards for GAP assessment visualization later
+        this.standards = response.standards;
+
+        // generate the test using the standards
+        this.generateGapTest(formData, this.standards);
+      },
+      error: (error) => {
+        console.error('Error generating standards from Gemini:', error);
+        this.loading = false;
+      }
+    });
+  }
+
+  generateGapTest(formData: any, standards: string[]) {
+    const testRequest = {
+      ...formData,
+      standards: standards
+    };
+    
+    this.apiService.generateGapTest(testRequest).subscribe({
+      next: async (response: any) => {
+        console.log('Gap test created successfully:', response);
+        this.gapTestName = `${formData.state} ${formData.gradeLevel} Grade Level Standardized Test`;
 
         this.gapTest = await this.markdownService.convert(response.test);
-        this.stateService.setTestData(this.gapTest); //allows to retain test preferences when switching tabs
+        this.stateService.setTestData(this.gapTest);
       },
-      error: (error: any) => {
-        console.error('error creating gap test:', error);
-        // Handle error logic here (e.g., show an error message)
+      error: (error) => {
+        console.error('Error creating gap test:', error);
+        this.loading = false;
       },
       complete: () => {
         this.loading = false;
@@ -78,12 +104,16 @@ export class GapAssessmentComponent {
     });
   }
 
+
   beginTest() {
       this.testActive = true; 
-      this.createGapTest();
+      this.generateStandards();
   }
 
   finishTest() {
     this.testActive = false;
   }
+
+  
+  
 }

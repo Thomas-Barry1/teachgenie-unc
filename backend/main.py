@@ -46,10 +46,17 @@ async def google_auth(info: dict):
 
 
 # Generating Gap Assessment
-@app.post("/api/gap-test")
+@app.post("/api/gap-assessment")
 async def gap_test(file: dict):
    print("Reached the backend api call: ", file)
    return True
+
+# Generating standards for gap test 
+@app.post("/api/gap-standards")
+async def gap_standards(request: FormRequest): 
+    print("made it to main.py")
+    standards =  await generate_standards(request)
+    return {"standards": standards}
 
 # Load .env environment variables
 load_dotenv()
@@ -64,9 +71,47 @@ genai.configure(api_key=os.environ["API_KEY"])
 # Different models: https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models
 model = genai.GenerativeModel('gemini-1.5-flash')
 
-async def generate_gap_test(request: FormRequest):
+async def generate_gap_assessment(request: FormRequest):
     print("Reached the backend api: call")
     return True
+
+async def generate_standards(request: FormRequest):
+    prompt = f"Create a set of 10 educational standards on the topic '{request.topic} for a GAP assessment"
+    prompt += f"The assessment should evaluate students' understanding of key concepts and identify gaps in their knowledge."
+    if request.gradeLevel:
+        prompt += f" The standards should be specific to {request.gradeLevel}"
+
+    if request.commonCoreStandards:
+        prompt += f" The standards should align with {request.commonCoreStandards}."
+
+    if request.skills:
+        prompt += f" The standards should align with {request.skills}."
+    
+    if request.questionType and (type(request.questionType) is not type((Form(None),))):
+        prompt += f"Ensure the standards can be tested using the following question types: {', '.join(request.questionType)}."
+    
+    if request.state:
+        prompt += f" Focus response using standards from this state: {request.state}."
+
+    response = model.generate_content(prompt)
+    print("Test response: ", response)
+    # Only iterate 5 or more times if a bad response is received
+    numIterations = 0
+    isValidResp = False
+    while not isValidResp and numIterations < 5:
+        try:
+            response.text
+            isValidResp = True
+        except:
+            numIterations += 1
+            print("Regenerate response")
+            response = model.generate_content(prompt)
+            print("Test response: ", response)
+    if numIterations == 5:
+        returnResp = "Error in AI response, try again or change request."
+    else:
+        returnResp = response.text
+    return returnResp
 
 async def generate_test(request: FormRequest):
     # Construct the prompt based on user input

@@ -25,6 +25,10 @@ export class ApiService {
     return this.http.post<any>(`${this.apiUrl}/gap-test`, formData);
   }
 
+  generateStandards(formData: any): Observable<any> { //could define interfaces/models to avoid 'any' typing
+    console.log("made it to api");
+    return this.http.post(`${this.apiUrl}/gap-standards`, formData);
+  }
 
   // Send auth info to the backend
   sendAuthInfoToBackend(user: any): Observable<any> {

@@ -15,6 +15,7 @@ export class ActiveTestComponent {
   selectedAnswerIndex: number | null = null;
   selectedAnswers: any[] = [] // TO DO: figure out how to store state of answers (backend perhaps or as local array)
   
+  @Input() numberOfQuestions: number = 0;
   timeRemaining: number = 1800; // TO DO: create formula that calculates time or add it as input
   interval: any; 
   //testStages = ['user-info', 'questions', 'completion'];
