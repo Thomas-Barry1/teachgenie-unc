@@ -21,8 +21,8 @@ export class GapAssessmentComponent {
   loading: boolean = false; 
   testActive: boolean = false; 
   
-  questions: string[] = []; //not sure types yet
-  standards: string[] = []; //not sure types yet
+  questions: any; //not sure types yet
+  standards: any;//not sure types yet
 
   constructor(private apiService: ApiService, private fb: FormBuilder, private stateService: StateService,
     private markdownService: MarkdownService){
@@ -66,10 +66,12 @@ export class GapAssessmentComponent {
 
     this.apiService.generateStandards(formData).subscribe({
       next: (response: any) => {
+        console.log("made it back to component")
 
         // store the standards for GAP assessment visualization later
         this.standards = response.standards;
-
+        console.log(response.standards);
+2
         // generate the test using the standards
         this.generateGapTest(formData, this.standards);
       },
@@ -80,7 +82,7 @@ export class GapAssessmentComponent {
     });
   }
 
-  generateGapTest(formData: any, standards: string[]) {
+  generateGapTest(formData: any, standards: any) {
     const testRequest = {
       ...formData,
       standards: standards

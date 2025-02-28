@@ -10,17 +10,17 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './active-test.component.css'
 })
 export class ActiveTestComponent {
-  @Input() questions: any[] = ['Example question 1'] //TO DO: receives real questions from parent (GapAssessmentComponent)
+  @Input() questions: any[] = ['Example question 1'] //TO DO: receives real Gemini-generated questions from parent (GapAssessmentComponent)
   currentQuestionIndex: number = 0;
   selectedAnswerIndex: number | null = null;
-  selectedAnswers: any[] = [] // TO DO: figure out how to store state of answers (backend perhaps or as local array)
+  selectedAnswers: any[] = [] // TO DO: figure out how to store state of answers (backend perhaps or as local storage)
   
   @Input() numberOfQuestions: number = 0;
   timeRemaining: number = 1800; // TO DO: create formula that calculates time or add it as input
   interval: any; 
   //testStages = ['user-info', 'questions', 'completion'];
   currentStage = ''
-  userInfoForm: FormGroup; // TO DO: connect data to backend 
+  userInfoForm: FormGroup; // TO DO: connect user data to backend 
   
 
   constructor(private fb: FormBuilder) {

@@ -77,7 +77,7 @@ async def generate_gap_assessment(request: FormRequest):
 
 async def generate_standards(request: FormRequest):
     prompt = f"Create a set of 10 educational standards on the topic '{request.topic} for a GAP assessment"
-    prompt += f"The assessment should evaluate students' understanding of key concepts and identify gaps in their knowledge."
+    prompt += f"For each standard, give one sentence only. So I want a total of 10 sentences only."
     if request.gradeLevel:
         prompt += f" The standards should be specific to {request.gradeLevel}"
 
@@ -87,12 +87,9 @@ async def generate_standards(request: FormRequest):
     if request.skills:
         prompt += f" The standards should align with {request.skills}."
     
-    if request.questionType and (type(request.questionType) is not type((Form(None),))):
-        prompt += f"Ensure the standards can be tested using the following question types: {', '.join(request.questionType)}."
-    
     if request.state:
         prompt += f" Focus response using standards from this state: {request.state}."
-
+    prompt+= f"I expect the format of the response to be only 10 sentences. One sentence per standard, and please number the standards."
     response = model.generate_content(prompt)
     print("Test response: ", response)
     # Only iterate 5 or more times if a bad response is received
@@ -116,6 +113,12 @@ async def generate_standards(request: FormRequest):
 async def generate_test(request: FormRequest):
     # Construct the prompt based on user input
     prompt = f"Write a test for a teacher on the topic '{request.topic}', and include answer key at end."
+
+    if request.standards: # TO DO: DEBUG- the standards aren't being included in the test
+        prompt+= f"Base the questions on the following educational standards: {request.standards}. A GAP assessment will be produced after the test from these standards"
+        prompt+= "Ensure that each question directly assesses one or more of these standards, evaluating students' understanding and application."
+        prompt+= "Please only include questions and answer key, no explanation about how your response does so."
+        print("made it to standards")
 
     if request.numberOfQuestions and (type(request.numberOfQuestions) is not type((Form(None),))):
         prompt += f" Include {request.numberOfQuestions} questions."
