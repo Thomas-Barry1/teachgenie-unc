@@ -110,13 +110,41 @@ export class GapAssessmentComponent {
     });
   }
 
-  parseApiResponse(response: any) {
+  // parseApiResponse(response: any) {
+  //   let questionsArray;
+
+  //   if (Array.isArray(response.test)) {
+  //     questionsArray = response.test;
+  //   } else if (typeof response.test === 'string') {
+  //     try {
+  //       const jsonMatch = response.test.match(/```json\n([\s\S]+)\n```/);
+  //       const jsonString = jsonMatch ? jsonMatch[1] : response.test;
+
+  //       questionsArray = JSON.parse(jsonString);
+  //     } catch (error) {
+  //       throw new Error('Failed to parse JSON from response.test');
+  //     }
+  //   } else {
+  //     throw new Error('Invalid response format');
+  //   }
+
+  //   return questionsArray.map((q: any) => ({
+  //     question: q.Question,
+  //     choices: q.AnswerChoices,
+  //     correctAnswers: q.CorrectAnswer,
+  //   }));
+  // }
+  parseApiResponse(response: any): Question[] {
     let questionsArray;
 
+    // If response.test is already an array, use it directly
     if (Array.isArray(response.test)) {
       questionsArray = response.test;
-    } else if (typeof response.test === 'string') {
+    }
+    // If response.test is a string, try parsing it
+    else if (typeof response.test === 'string') {
       try {
+        // Extract JSON if it's wrapped in markdown format (```json ... ```)
         const jsonMatch = response.test.match(/```json\n([\s\S]+)\n```/);
         const jsonString = jsonMatch ? jsonMatch[1] : response.test;
 
@@ -128,11 +156,14 @@ export class GapAssessmentComponent {
       throw new Error('Invalid response format');
     }
 
-    return questionsArray.map((q: any) => ({
-      question: q.Question,
-      choices: q.AnswerChoices,
-      correctAnswers: q.CorrectAnswer,
-    }));
+    // Transform data into the required format
+    return questionsArray.map(
+      (q: any): Question => ({
+        question: q.Question,
+        answerChoices: q.AnswerChoices,
+        correctAnswer: q.CorrectAnswer,
+      })
+    );
   }
 
   beginTest() {
