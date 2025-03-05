@@ -21,32 +21,20 @@
         </form>
     </div>
     
-    <div class='questions' *ngIf="currentStage === 'questions'">
+    <div class='questions' *ngIf="questions.length > 0">
         <div class='questions-header'>
-            <h2>Question {{ currentQuestionIndex + 1 }}/30</h2>
-            <h2 id="timer">Time Remaining: {{ getFormattedTime() }}</h2>
+            <h2>Question {{ currentQuestionIndex + 1 }}/{{ questions.length }}</h2>
         </div>
+    
         <div class='question-content'>
-            <p id='question'>In the quiet town of Elmwood, where autumn leaves danced through the streets, young Amelia spent her afternoons in the old library. The scent of aged paper filled the air as she lost herself in stories of distant lands. One rainy evening, she discovered a dusty, leather-bound book tucked away on the highest shelf. As she flipped through its yellowed pages, the words seemed to glow faintly under the dim light. A sudden gust of wind rattled the windows, and for a brief moment, Amelia thought she heard a whisper calling her name.</p>
-            
-            <div class="answer-option" (click)="selectAnswer(0)">
-                <div class="circle" [class.filled]="selectedAnswerIndex === 0"></div>
-                <p>She is deeply immersed in the book and her imagination is taking over.</p>
-            </div>
-            <div class="answer-option" (click)="selectAnswer(1)">
-                <div class="circle" [class.filled]="selectedAnswerIndex === 1"></div>
-                <p>The library is known to be haunted by a mysterious spirit.</p>
-            </div>
-            <div class="answer-option" (click)="selectAnswer(2)">
-                <div class="circle" [class.filled]="selectedAnswerIndex === 2"></div>
-                <p>The wind outside is carrying voices from the street.</p>
-            </div>
-            <div class="answer-option" (click)="selectAnswer(3)">
-                <div class="circle" [class.filled]="selectedAnswerIndex === 3"></div>
-                <p>She is reading a book about magic, and the words are coming to life.</p>
+            <p>{{ questions[currentQuestionIndex].question }}</p>
+    
+            <div class="answer-option" *ngFor="let option of questions[currentQuestionIndex].answerChoices" (click)="selectAnswer(option)">
+                <div class="circle" [class.filled]="selectedAnswer === option"></div>
+                <p>{{ option }}</p>
             </div>
         </div>
-
+    
         <div class="button-container">
             <button mat-raised-button color="accent" (click)="prevQuestion()" [disabled]="currentQuestionIndex === 0">Back</button>
             <button mat-raised-button color="primary" (click)="nextQuestion()">

@@ -1,4 +1,4 @@
-<mat-card *ngIf="!testActive">
+<!--<mat-card *ngIf="!testActive">
   <h2>Analyze gap results</h2>
   <div *ngIf="!selectedFile">Upload PDF</div>
   <div *ngIf="selectedFile">{{ selectedFile.name }}</div>
@@ -11,7 +11,9 @@
   >
     Analyze file and generate gap assessment
   </button>
-</mat-card>
+</mat-card>-->
+
+
 <mat-card *ngIf="!testActive">
   <h2>Create Test</h2>
   <form [formGroup]="gapTestForm" (ngSubmit)="beginTest()">
@@ -23,13 +25,15 @@
   [parentFormGroup]="gapTestForm"
   [showQuestionTypes]="true"
   [testType]="'gap'"
-></app-form-options>
-    <button mat-raised-button color=“primary” type=“submit”>Begin Test</button>
+    ></app-form-options>
+    <div class = "buttons">
+    <button id="button-left" mat-raised-button color=“primary” type=“submit”>Begin Test</button>
+    </div>
   </form>
   <!-- Add loading mat spinner logic here-->
   <!--Add save activities button here-->
 </mat-card>
 <mat-card id="test"*ngIf="testActive">
   <h1> {{gapTestName}} </h1>
-  <app-active-test></app-active-test>
+  <app-active-test [questions]="questions"></app-active-test>
 </mat-card>

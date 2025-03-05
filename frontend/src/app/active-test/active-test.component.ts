@@ -1,6 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Question } from '../shared/question.model'
+
 
 @Component({
   selector: 'app-active-test',
@@ -10,9 +12,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './active-test.component.css'
 })
 export class ActiveTestComponent {
-  @Input() questions: any[] = ['Example question 1'] //TO DO: receives real Gemini-generated questions from parent (GapAssessmentComponent)
+  //@Input() questions: any[] = ['Example question 1'] 
+  @Input() questions: Question[] = []; //TO DO: receives real Gemini-generated questions from parent (GapAssessmentComponent)
   currentQuestionIndex: number = 0;
-  selectedAnswerIndex: number | null = null;
+  selectedAnswer: string | null = null;
   selectedAnswers: any[] = [] // TO DO: figure out how to store state of answers (backend perhaps or as local storage)
   
   @Input() numberOfQuestions: number = 0;
@@ -39,9 +42,8 @@ export class ActiveTestComponent {
 
   nextQuestion() {
     if (this.currentQuestionIndex < this.questions.length-1) {
-      console.log(this.currentQuestionIndex);
-      console.log(this.questions.length);
       this.currentQuestionIndex++;
+      this.selectedAnswer = null;
     }
     else {
       this.currentStage = 'completion'
@@ -51,11 +53,12 @@ export class ActiveTestComponent {
   prevQuestion() {
     if (this.currentQuestionIndex > 0) {
       this.currentQuestionIndex--;
+      this.selectedAnswer = null;
     }
   }
 
-  selectAnswer(index: number) {
-    this.selectedAnswerIndex = index;
+  selectAnswer(answer: string) {
+    this.selectedAnswer= answer;
   }
 
   startTimer() {

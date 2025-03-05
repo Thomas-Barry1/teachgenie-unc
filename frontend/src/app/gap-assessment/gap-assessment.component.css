@@ -23,3 +23,7 @@ mat-card {
     color: #3f51b5;
   }
 
+  .buttons {
+    display: flex;
+    gap: 20px; /* Adjust spacing as needed */
+  }

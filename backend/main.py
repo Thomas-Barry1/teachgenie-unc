@@ -26,7 +26,9 @@ class FormRequest(BaseModel):
     commonCoreStandards: str = Form(None),
     skills: str = Form(None),
     questionType: Union[List[str], str] = Form(None),  # Accepting multiple values
-    state: str = Form(None)
+    state: str = Form(None),
+    standards: Optional[str] = Form(None)
+
 
 @app.post("/api/test")
 async def test(request: FormRequest):
@@ -78,6 +80,7 @@ async def generate_gap_assessment(request: FormRequest):
 async def generate_standards(request: FormRequest):
     prompt = f"Create a set of 10 educational standards on the topic '{request.topic} for a GAP assessment"
     prompt += f"For each standard, give one sentence only. So I want a total of 10 sentences only."
+    prompt += "Make sure each standard is able to be tested via a multiple choice and/or true/false question to determine proficiency."
     if request.gradeLevel:
         prompt += f" The standards should be specific to {request.gradeLevel}"
 
@@ -114,10 +117,12 @@ async def generate_test(request: FormRequest):
     # Construct the prompt based on user input
     prompt = f"Write a test for a teacher on the topic '{request.topic}', and include answer key at end."
 
-    if request.standards: # TO DO: DEBUG- the standards aren't being included in the test
+    if request.standards:
         prompt+= f"Base the questions on the following educational standards: {request.standards}. A GAP assessment will be produced after the test from these standards"
         prompt+= "Ensure that each question directly assesses one or more of these standards, evaluating students' understanding and application."
         prompt+= "Please only include questions and answer key, no explanation about how your response does so."
+        prompt += "This next fact is VERY important. Please return your answer in the following JSON format."
+        prompt += "{Question, AnswerChoices[], CorrectAnswer}. Don't give me any additional sentences."
         print("made it to standards")
 
     if request.numberOfQuestions and (type(request.numberOfQuestions) is not type((Form(None),))):

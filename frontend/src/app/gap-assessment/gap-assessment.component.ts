@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { StateService } from '../services/state.service';
 import { MarkdownService } from '../services/markdown.service';
 import { SafeHtml } from '@angular/platform-browser';
+import { Question } from '../shared/question.model'
+
 
 @Component({
   selector: 'app-gap-assessment',
@@ -21,7 +23,7 @@ export class GapAssessmentComponent {
   loading: boolean = false; 
   testActive: boolean = false; 
   
-  questions: any; //not sure types yet
+  questions: Question[] = [];
   standards: any;//not sure types yet
 
   constructor(private apiService: ApiService, private fb: FormBuilder, private stateService: StateService,
@@ -56,7 +58,7 @@ export class GapAssessmentComponent {
     console.log("returned from the backend call");
   }
 
-  getFormData(): any { // could define model for this
+  getFormData(): any { 
     return this.gapTestForm.value;
   }
 
@@ -90,11 +92,20 @@ export class GapAssessmentComponent {
     
     this.apiService.generateGapTest(testRequest).subscribe({
       next: async (response: any) => {
-        console.log('Gap test created successfully:', response);
+        console.log("Raw API Response:", response);
         this.gapTestName = `${formData.state} ${formData.gradeLevel} Grade Level Standardized Test`;
+
+        // DEBUG: Map API response to Question model so questions/answers can populate active-test-component
+        // this.questions = response.map((q: any) => ({
+        //   text: q.Question,
+        //   options: q.AnswerChoices,
+        //   correctAnswer: q.CorrectAnswer
+        // }));
 
         this.gapTest = await this.markdownService.convert(response.test);
         this.stateService.setTestData(this.gapTest);
+        
+        
       },
       error: (error) => {
         console.error('Error creating gap test:', error);
