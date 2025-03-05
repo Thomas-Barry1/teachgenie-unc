@@ -110,30 +110,6 @@ export class GapAssessmentComponent {
     });
   }
 
-  // parseApiResponse(response: any) {
-  //   let questionsArray;
-
-  //   if (Array.isArray(response.test)) {
-  //     questionsArray = response.test;
-  //   } else if (typeof response.test === 'string') {
-  //     try {
-  //       const jsonMatch = response.test.match(/```json\n([\s\S]+)\n```/);
-  //       const jsonString = jsonMatch ? jsonMatch[1] : response.test;
-
-  //       questionsArray = JSON.parse(jsonString);
-  //     } catch (error) {
-  //       throw new Error('Failed to parse JSON from response.test');
-  //     }
-  //   } else {
-  //     throw new Error('Invalid response format');
-  //   }
-
-  //   return questionsArray.map((q: any) => ({
-  //     question: q.Question,
-  //     choices: q.AnswerChoices,
-  //     correctAnswers: q.CorrectAnswer,
-  //   }));
-  // }
   parseApiResponse(response: any): Question[] {
     let questionsArray;
 

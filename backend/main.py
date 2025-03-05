@@ -118,10 +118,11 @@ async def generate_test(request: FormRequest):
     prompt = f"Write a test for a teacher on the topic '{request.topic}', and include answer key at end."
 
     if request.standards:
-        prompt+= f"Base the questions on the following educational standards: {request.standards}. A GAP assessment will be produced after the test from these standards"
-        prompt+= "Ensure that each question directly assesses one or more of these standards, evaluating students' understanding and application."
-        prompt+= "Please only include questions and answer key, no explanation about how your response does so."
-        prompt += "This next fact is VERY important. Please return your answer in the following JSON format."
+        prompt+= f"Base the questions on the following educational standards: {request.standards}. A GAP assessment will be produced after the test from these standards. "
+        prompt+= "Ensure that each question directly assesses one or more of these standards, evaluating students' understanding and application. "
+        prompt+= "Please only include questions and answer key, no explanation about how your response does so. "
+        prompt+= "Each question must have exactly one correct answer. "
+        prompt += "This next fact is VERY important. Please return your answer in the following JSON format. "
         prompt += "{Question, AnswerChoices[], CorrectAnswer}. Don't give me any additional sentences."
         print("made it to standards")
 
