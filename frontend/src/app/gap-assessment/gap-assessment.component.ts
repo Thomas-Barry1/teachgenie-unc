@@ -4,30 +4,32 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { StateService } from '../services/state.service';
 import { MarkdownService } from '../services/markdown.service';
 import { SafeHtml } from '@angular/platform-browser';
-import { Question } from '../shared/question.model'
-
+import { Question } from '../shared/question.model';
 
 @Component({
   selector: 'app-gap-assessment',
   // imports: [],
   templateUrl: './gap-assessment.component.html',
-  styleUrl: './gap-assessment.component.css'
+  styleUrl: './gap-assessment.component.css',
 })
 export class GapAssessmentComponent {
-
   selectedFile: File | null = null;
   gapTestForm: FormGroup<any>;
   gapTest: SafeHtml = '';
   gapTestName: String = '';
 
-  loading: boolean = false; 
-  testActive: boolean = false; 
-  
-  questions: Question[] = [];
-  standards: any;//not sure types yet
+  loading: boolean = false;
+  testActive: boolean = false;
 
-  constructor(private apiService: ApiService, private fb: FormBuilder, private stateService: StateService,
-    private markdownService: MarkdownService){
+  questions: Question[] = [];
+  standards: any; //not sure types yet
+
+  constructor(
+    private apiService: ApiService,
+    private fb: FormBuilder,
+    private stateService: StateService,
+    private markdownService: MarkdownService
+  ) {
     this.gapTestForm = this.fb.group({
       topic: [''],
       numberOfQuestions: [''],
@@ -35,12 +37,12 @@ export class GapAssessmentComponent {
       commonCoreStandards: [''],
       skills: [''],
       questionType: [''],
-      state: ['']
+      state: [''],
     });
 
     // load existing data if available
     this.gapTest = this.stateService.getTestData();
-  };
+  }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -48,17 +50,17 @@ export class GapAssessmentComponent {
       this.selectedFile = input.files[0];
     }
   }
-  createGapAssessment(){
-    console.log("Sending to backend");
+  createGapAssessment() {
+    console.log('Sending to backend');
     this.apiService.generateGapAssessment(this.selectedFile).subscribe({
-      next: (val)=>{
-        console.log("the service next call is here")
-      }
+      next: (val) => {
+        console.log('the service next call is here');
+      },
     });
-    console.log("returned from the backend call");
+    console.log('returned from the backend call');
   }
 
-  getFormData(): any { 
+  getFormData(): any {
     return this.gapTestForm.value;
   }
 
@@ -68,44 +70,35 @@ export class GapAssessmentComponent {
 
     this.apiService.generateStandards(formData).subscribe({
       next: (response: any) => {
-        console.log("made it back to component")
+        console.log('made it back to component');
 
         // store the standards for GAP assessment visualization later
         this.standards = response.standards;
         console.log(response.standards);
-2
+        2;
         // generate the test using the standards
         this.generateGapTest(formData, this.standards);
       },
       error: (error) => {
         console.error('Error generating standards from Gemini:', error);
         this.loading = false;
-      }
+      },
     });
   }
 
   generateGapTest(formData: any, standards: any) {
     const testRequest = {
       ...formData,
-      standards: standards
+      standards: standards,
     };
-    
+
     this.apiService.generateGapTest(testRequest).subscribe({
       next: async (response: any) => {
-        console.log("Raw API Response:", response);
-        this.gapTestName = `${formData.state} ${formData.gradeLevel} Grade Level Standardized Test`;
+        console.log('Raw API Response:', response);
+        this.gapTestName = `${formData.state} ${formData.gradeLevel} Grade Level Test`;
 
-        // DEBUG: Map API response to Question model so questions/answers can populate active-test-component
-        // this.questions = response.map((q: any) => ({
-        //   text: q.Question,
-        //   options: q.AnswerChoices,
-        //   correctAnswer: q.CorrectAnswer
-        // }));
-
-        this.gapTest = await this.markdownService.convert(response.test);
-        this.stateService.setTestData(this.gapTest);
-        
-        
+        this.questions = this.parseApiResponse(response);
+        console.log(this.questions);
       },
       error: (error) => {
         console.error('Error creating gap test:', error);
@@ -113,20 +106,41 @@ export class GapAssessmentComponent {
       },
       complete: () => {
         this.loading = false;
-      }
+      },
     });
   }
 
+  parseApiResponse(response: any) {
+    let questionsArray;
+
+    if (Array.isArray(response.test)) {
+      questionsArray = response.test;
+    } else if (typeof response.test === 'string') {
+      try {
+        const jsonMatch = response.test.match(/```json\n([\s\S]+)\n```/);
+        const jsonString = jsonMatch ? jsonMatch[1] : response.test;
+
+        questionsArray = JSON.parse(jsonString);
+      } catch (error) {
+        throw new Error('Failed to parse JSON from response.test');
+      }
+    } else {
+      throw new Error('Invalid response format');
+    }
+
+    return questionsArray.map((q: any) => ({
+      question: q.Question,
+      choices: q.AnswerChoices,
+      correctAnswers: q.CorrectAnswer,
+    }));
+  }
 
   beginTest() {
-      this.testActive = true; 
-      this.generateStandards();
+    this.testActive = true;
+    this.generateStandards();
   }
 
   finishTest() {
     this.testActive = false;
   }
-
-  
-  
 }
