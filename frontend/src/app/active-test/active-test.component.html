@@ -1,50 +1,64 @@
 <div class="test-container">
-    <div class='user-info' *ngIf="currentStage === 'user-info'">
-        <h2 class="user-header">Enter Your Information</h2>
-        <form [formGroup]="userInfoForm" (ngSubmit)="onSubmitUserData()">
-          <mat-form-field appearance="fill">
-            <mat-label>First Name</mat-label>
-            <input matInput formControlName="firstName" />
-          </mat-form-field>
-      
-          <mat-form-field appearance="fill">
-            <mat-label>Last Name</mat-label>
-            <input matInput formControlName="lastName" />
-          </mat-form-field>
-      
-          <mat-form-field appearance="fill">
-            <mat-label>Teacher Code</mat-label>
-            <input matInput formControlName="teacherCode" />
-          </mat-form-field>
-      
-          <button mat-raised-button color="primary" type="submit">Submit</button>
-        </form>
+  <div class="user-info" *ngIf="currentStage === 'user-info'">
+    <h2 class="user-header">Enter Your Information</h2>
+    <form [formGroup]="userInfoForm" (ngSubmit)="onSubmitUserData()">
+      <mat-form-field appearance="fill">
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="firstName" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="lastName" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Teacher Code</mat-label>
+        <input matInput formControlName="teacherCode" />
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit">Submit</button>
+    </form>
+  </div>
+
+  <div class="questions" *ngIf="questions.length > 0">
+    <div class="questions-header">
+      <h2>Question {{ currentQuestionIndex + 1 }}/{{ questions.length }}</h2>
     </div>
-    
-    <div class='questions' *ngIf="questions.length > 0">
-        <div class='questions-header'>
-            <h2>Question {{ currentQuestionIndex + 1 }}/{{ questions.length }}</h2>
-        </div>
-    
-        <div class='question-content'>
-            <p>{{ questions[currentQuestionIndex].question }}</p>
-    
-            <div class="answer-option" *ngFor="let option of questions[currentQuestionIndex].answerChoices" (click)="selectAnswer(option)">
-                <div class="circle" [class.filled]="selectedAnswer === option"></div>
-                <p>{{ option }}</p>
-            </div>
-        </div>
-    
-        <div class="button-container">
-            <button mat-raised-button color="accent" (click)="prevQuestion()" [disabled]="currentQuestionIndex === 0">Back</button>
-            <button mat-raised-button color="primary" (click)="nextQuestion()">
-                {{ currentQuestionIndex < questions.length - 1 ? 'Next' : 'Submit' }}
-            </button>
-        </div>
-    </div>
-    
-    <div class='completion' *ngIf="currentStage === 'completion'">
-        <h2>Test Completed!</h2>
-        <p>Thank you for completing the test.</p>
+
+    <div class="question-content">
+      <p>{{ questions[currentQuestionIndex].question }}</p>
+
+      <div
+        class="answer-option"
+        *ngFor="let option of questions[currentQuestionIndex].answerChoices"
+        (click)="selectAnswer(option)"
+      >
+        <div
+          class="circle"
+          [class.filled]="selectedAnswers[currentQuestionIndex] === option"
+        ></div>
+        <p>{{ option }}</p>
       </div>
+    </div>
+
+    <div class="button-container">
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="prevQuestion()"
+        [disabled]="currentQuestionIndex === 0"
+      >
+        Back
+      </button>
+      <button mat-raised-button color="primary" (click)="nextQuestion()">
+        {{ currentQuestionIndex < questions.length - 1 ? "Next" : "Submit" }}
+      </button>
+    </div>
+  </div>
+
+  <div class="completion" *ngIf="currentStage === 'completion'">
+    <h2>Test Completed!</h2>
+    <p>Thank you for completing the test.</p>
+  </div>
 </div>

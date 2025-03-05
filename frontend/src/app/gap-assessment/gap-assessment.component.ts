@@ -98,6 +98,7 @@ export class GapAssessmentComponent {
         this.gapTestName = `${formData.state} ${formData.gradeLevel} Grade Level Test`;
 
         this.questions = this.parseApiResponse(response);
+        localStorage.setItem('questions', JSON.stringify(this.questions));
         console.log(this.questions);
       },
       error: (error) => {
