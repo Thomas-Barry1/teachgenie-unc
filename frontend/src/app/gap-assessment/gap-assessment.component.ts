@@ -70,7 +70,7 @@ export class GapAssessmentComponent {
 
     this.apiService.generateStandards(formData).subscribe({
       next: (response: any) => {
-        console.log('made it back to component');
+        console.log('Made it back to component');
 
         // store the standards for GAP assessment visualization later
         this.standards = response.standards;

@@ -14,10 +14,12 @@ export class ApiService {
 
   generateTest(topic: any): Observable<any> {
     // console.log("AI formdata: ", topic);
+    console.log("Made it to frontend api service generate test")
     return this.http.post<any>(`${this.apiUrl}/test`, topic);
   }
 
   generateGapAssessment(file: File | null) : Observable<any>{
+    console.log("Made it to frontend api service generate gap assessment");
     return this.http.post<any>(`${this.apiUrl}/gap-assessment`, file);
   }
 
@@ -26,7 +28,7 @@ export class ApiService {
   }
 
   generateStandards(formData: any): Observable<any> { //could define interfaces/models to avoid 'any' typing
-    console.log("made it to api");
+    console.log("Made it to frontend api service generate gap assessment");
     return this.http.post(`${this.apiUrl}/gap-standards`, formData);
   }
 

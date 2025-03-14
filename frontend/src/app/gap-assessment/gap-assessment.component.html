@@ -13,27 +13,28 @@
   </button>
 </mat-card>-->
 
-
 <mat-card *ngIf="!testActive">
-  <h2>Create Test</h2>
+  <h2>Create Test For Gap Assessment</h2>
   <form [formGroup]="gapTestForm" (ngSubmit)="beginTest()">
     <mat-form-field appearance="fill">
       <mat-label>Topic</mat-label>
       <input matInput formControlName="topic" />
     </mat-form-field>
     <app-form-options
-  [parentFormGroup]="gapTestForm"
-  [showQuestionTypes]="true"
-  [testType]="'gap'"
+      [parentFormGroup]="gapTestForm"
+      [showQuestionTypes]="true"
+      [testType]="'gap'"
     ></app-form-options>
-    <div class = "buttons">
-    <button id="button-left" mat-raised-button color=“primary” type=“submit”>Begin Test</button>
+    <div class="buttons">
+      <button id="button-left" mat-raised-button color="primary" type="submit">
+        Begin Test
+      </button>
     </div>
   </form>
   <!-- Add loading mat spinner logic here-->
   <!--Add save activities button here-->
 </mat-card>
-<mat-card id="test"*ngIf="testActive">
-  <h1> {{gapTestName}} </h1>
+<mat-card id="test" *ngIf="testActive">
+  <h1>{{ gapTestName }}</h1>
   <app-active-test [questions]="questions"></app-active-test>
 </mat-card>

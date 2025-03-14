@@ -56,7 +56,7 @@ async def gap_test(file: dict):
 # Generating standards for gap test 
 @app.post("/api/gap-standards")
 async def gap_standards(request: FormRequest): 
-    print("made it to main.py")
+    print("Made it to main.py")
     standards =  await generate_standards(request)
     return {"standards": standards}
 
