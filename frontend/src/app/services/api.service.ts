@@ -19,16 +19,17 @@ export class ApiService {
   }
 
   generateGapAssessment(file: File | null) : Observable<any>{
-    console.log("Made it to frontend api service generate gap assessment");
+    console.log("Made it to frontend api service generate gap assessment: ", file);
     return this.http.post<any>(`${this.apiUrl}/gap-assessment`, file);
   }
 
   generateGapTest(formData: any): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/test`, formData);
+    console.log("Made to api service generateGapTest");
+    return this.http.post<any>(`${this.apiUrl}/gap-test`, formData);
   }
 
   generateStandards(formData: any): Observable<any> { //could define interfaces/models to avoid 'any' typing
-    console.log("Made it to frontend api service generate gap assessment");
+    console.log("Made it to frontend api service generate gap standards: ", formData);
     return this.http.post(`${this.apiUrl}/gap-standards`, formData);
   }
 

@@ -32,7 +32,6 @@ class FormRequest(BaseModel):
 
 @app.post("/api/test")
 async def test(request: FormRequest):
-    print("Made it to TEST")
     print("TestRequest ", request)
     test = await generate_test(request)
     return {"test": test}
@@ -42,14 +41,14 @@ from sqlalchemy.orm import Session
 
 # Storing user info
 @app.post("/api/auth/google")
-async def google_auth(info: dict):
+async def google_auth(info: FormRequest):
     print("Auth info: ", info)
     return True
 
 
 # Generating Gap Assessment
-@app.post("/api/gap-assessment")
-async def gap_test(file: dict):
+@app.post("/api/gap-test")
+async def gap_test(file: FormRequest):
    print("Reached the backend api call: ", file)
    return True
 
@@ -71,28 +70,35 @@ if not api_key:
 genai.configure(api_key=os.environ["API_KEY"])
 
 # Different models: https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-2.0-flash')
 
-async def generate_gap_assessment(request: FormRequest):
-    print("Reached the backend api: call")
-    return True
+async def generate_test(request: FormRequest):
+    # Construct the prompt based on user input
+    prompt = f"Write a test for a teacher on the topic '{request.topic}', and include answer key at end."
 
-async def generate_standards(request: FormRequest):
-    prompt = f"Create a set of 10 educational standards on the topic '{request.topic} for a GAP assessment"
-    prompt += f"For each standard, give one sentence only. So I want a total of 10 sentences only."
-    prompt += "Make sure each standard is able to be tested via a multiple choice and/or true/false question to determine proficiency."
+    if request.numberOfQuestions and (type(request.numberOfQuestions) is not type((Form(None),))):
+        prompt += f" Include {request.numberOfQuestions} questions."
+
     if request.gradeLevel:
-        prompt += f" The standards should be specific to {request.gradeLevel}"
+        prompt += f" Grade Level: {request.gradeLevel}."
 
     if request.commonCoreStandards:
-        prompt += f" The standards should align with {request.commonCoreStandards}."
+        prompt += f" Common Core Standards: {request.commonCoreStandards}."
 
     if request.skills:
-        prompt += f" The standards should align with {request.skills}."
-    
+        prompt += f" Focus on skills: {request.skills}."
+
+    if request.questionType and (type(request.questionType) is not type((Form(None),))):
+        prompt += f" Question Types: {', '.join(request.questionType)}."
+        if "Reading Passage" in request.questionType:
+            print("Reading Passage")
+            if request.gradeLevel:
+                prompt += f" Very important the length of the reading passage should be at least 200 words and 100 times the grade level."
+            else:
+                prompt += " Very important the length of the reading passage should be at least 200 words and make it longer depending on the other criteria."
     if request.state:
         prompt += f" Focus response using standards from this state: {request.state}."
-    prompt+= f"I expect the format of the response to be only 10 sentences. One sentence per standard, and please number the standards."
+    print("Prompt: ", prompt)
     response = model.generate_content(prompt)
     print("Test response: ", response)
     # Only iterate 5 or more times if a bad response is received
@@ -113,9 +119,49 @@ async def generate_standards(request: FormRequest):
         returnResp = response.text
     return returnResp
 
-async def generate_test(request: FormRequest):
+async def generate_gap_assessment(request: FormRequest):
+    print("Reached the backend api: call")
+    return True
+
+async def generate_standards(request: FormRequest):
+    prompt = f"Create a set of 10 educational standards on the topic '{request.topic}."
+    prompt += f"For each standard, give one sentence only. So I want a total of 10 sentences only."
+    prompt += "Make sure each standard is able to be tested via a multiple choice and/or true/false question to determine proficiency."
+    if request.gradeLevel:
+        prompt += f" The standards should be specific to {request.gradeLevel}"
+
+    if request.commonCoreStandards:
+        prompt += f" The standards should align with {request.commonCoreStandards}."
+
+    if request.skills:
+        prompt += f" The standards should align with {request.skills}."
+    
+    if request.state:
+        prompt += f" Focus response using standards from this state: {request.state}."
+    prompt+= f"I expect the format of the response to be only 10 sentences. One sentence per standard, and please number the standards."
+    response = model.generate_content(prompt)
+    print("Generate Standards Response: ", response)
+    # Only iterate 5 or more times if a bad response is received
+    numIterations = 0
+    isValidResp = False
+    while not isValidResp and numIterations < 5:
+        try:
+            response.text
+            isValidResp = True
+        except:
+            numIterations += 1
+            print("Regenerate response")
+            response = model.generate_content(prompt)
+            print("Generate Standards Response: ", response)
+    if numIterations == 5:
+        returnResp = "Error in AI response, try again or change request."
+    else:
+        returnResp = response.text
+    return returnResp
+
+async def generate_gap_test(request: FormRequest):
     # Construct the prompt based on user input
-    prompt = f"Write a test for a teacher on the topic '{request.topic}', and include answer key at end."
+    prompt = f"Write a test for a teacher on the topic '{request.topic}', and include answer key at end. "
 
     if request.standards:
         prompt+= f"Base the questions on the following educational standards: {request.standards}. A GAP assessment will be produced after the test from these standards. "
@@ -124,7 +170,7 @@ async def generate_test(request: FormRequest):
         prompt+= "Each question must have exactly one correct answer. "
         prompt += "This next fact is VERY important. Please return your answer in the following JSON format. "
         prompt += "{Question, AnswerChoices[], CorrectAnswer}. Don't give me any additional sentences."
-        print("made it to standards")
+        print("Made it to standards")
 
     if request.numberOfQuestions and (type(request.numberOfQuestions) is not type((Form(None),))):
         prompt += f" Include {request.numberOfQuestions} questions."
