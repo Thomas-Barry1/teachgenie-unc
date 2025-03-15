@@ -24,7 +24,7 @@ export class ApiService {
   }
 
   generateGapTest(formData: any): Observable<any> {
-    console.log("Made to api service generateGapTest");
+    console.log("Made to api service generateGapTest: ", formData);
     return this.http.post<any>(`${this.apiUrl}/gap-test`, formData);
   }
 
