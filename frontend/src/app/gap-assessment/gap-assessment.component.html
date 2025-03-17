@@ -13,7 +13,7 @@
   </button>
 </mat-card>-->
 
-<mat-card *ngIf="!testActive">
+<mat-card *ngIf="!testActive && !testComplete">
   <h2>Create Test For Gap Assessment</h2>
   <form [formGroup]="gapTestForm" (ngSubmit)="beginTest()">
     <mat-form-field appearance="fill">
@@ -36,5 +36,14 @@
 </mat-card>
 <mat-card id="test" *ngIf="testActive">
   <h1>{{ gapTestName }}</h1>
-  <app-active-test [questions]="questions"></app-active-test>
+  <app-active-test
+    [questions]="questions"
+    (taskCompleted)="finishTest($event)"
+  ></app-active-test>
+</mat-card>
+
+<mat-card *ngIf="testComplete">
+  <h1>{{ gapTestName }}</h1>
+  <h2>Test Complete!</h2>
+  <!-- <app-active-test [questions]="questions"></app-active-test> -->
 </mat-card>

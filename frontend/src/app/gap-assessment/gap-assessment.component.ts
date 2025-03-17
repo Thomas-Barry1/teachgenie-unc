@@ -20,6 +20,7 @@ export class GapAssessmentComponent {
 
   loading: boolean = false;
   testActive: boolean = false;
+  testComplete: boolean = false;
 
   questions: Question[] = [];
   standards: any; //not sure types yet
@@ -148,7 +149,9 @@ export class GapAssessmentComponent {
     this.generateStandards();
   }
 
-  finishTest() {
+  finishTest(eventMessage: string) {
+    console.log("Received event from child:", eventMessage);
     this.testActive = false;
+    this.testComplete = true
   }
 }

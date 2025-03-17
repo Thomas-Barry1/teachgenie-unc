@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Question } from '../shared/question.model';
@@ -18,6 +18,8 @@ export class ActiveTestComponent {
   selectedAnswers: any[] = [];
 
   @Input() numberOfQuestions: number = 0;
+  @Output() taskCompleted = new EventEmitter<string>(); // EventEmitter to notify parent
+
   timeRemaining: number = 1800; // TO DO: create formula that calculates time or add it as input
   interval: any;
   //testStages = ['user-info', 'questions', 'completion'];
@@ -44,8 +46,13 @@ export class ActiveTestComponent {
       this.currentQuestionIndex++;
       this.selectedAnswer = null;
     } else {
-      this.currentStage = 'completion';
+      this.submitTest();
     }
+  }
+
+  submitTest() {
+    this.currentStage = 'completion';
+    this.taskCompleted.emit("Task is done! ✅"); // Notify parent
   }
 
   prevQuestion() {
