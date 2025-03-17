@@ -48,9 +48,10 @@ async def google_auth(info: FormRequest):
 
 # Generating Gap Assessment
 @app.post("/api/gap-test")
-async def gap_test(file: FormRequest):
-   print("Reached the backend api call: ", file)
-   return True
+async def gap_test(request: FormRequest):
+   print("Reached the backend gap test api call: ", request)
+   test = await generate_gap_test(request)
+   return {"test" : test}
 
 # Generating standards for gap test 
 @app.post("/api/gap-standards")
@@ -70,7 +71,7 @@ if not api_key:
 genai.configure(api_key=os.environ["API_KEY"])
 
 # Different models: https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models
-model = genai.GenerativeModel('gemini-2.0-flash')
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 async def generate_test(request: FormRequest):
     # Construct the prompt based on user input
@@ -164,13 +165,13 @@ async def generate_gap_test(request: FormRequest):
     prompt = f"Write a test for a teacher on the topic '{request.topic}', and include answer key at end. "
 
     if request.standards:
-        prompt+= f"Base the questions on the following educational standards: {request.standards}. A GAP assessment will be produced after the test from these standards. "
+        prompt+= f"Base the questions on the following educational standards: {request.standards}. " # A GAP assessment will be produced after the test from these standards. "
         prompt+= "Ensure that each question directly assesses one or more of these standards, evaluating students' understanding and application. "
         prompt+= "Please only include questions and answer key, no explanation about how your response does so. "
         prompt+= "Each question must have exactly one correct answer. "
         prompt += "This next fact is VERY important. Please return your answer in the following JSON format. "
         prompt += "{Question, AnswerChoices[], CorrectAnswer}. Don't give me any additional sentences."
-        print("Made it to standards")
+        print("Standards included")
 
     if request.numberOfQuestions and (type(request.numberOfQuestions) is not type((Form(None),))):
         prompt += f" Include {request.numberOfQuestions} questions."
@@ -196,7 +197,7 @@ async def generate_gap_test(request: FormRequest):
         prompt += f" Focus response using standards from this state: {request.state}."
     print("Prompt: ", prompt)
     response = model.generate_content(prompt)
-    print("Test response: ", response)
+    print("Gap test response: ", response)
     # Only iterate 5 or more times if a bad response is received
     numIterations = 0
     isValidResp = False
