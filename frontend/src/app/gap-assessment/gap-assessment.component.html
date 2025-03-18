@@ -12,7 +12,6 @@
     Analyze file and generate gap assessment
   </button>
 </mat-card>-->
-
 <mat-card *ngIf="!testActive && !testComplete">
   <h2>Create Test For Gap Assessment</h2>
   <form [formGroup]="gapTestForm" (ngSubmit)="beginTest()">
@@ -38,7 +37,7 @@
   <h1>{{ gapTestName }}</h1>
   <app-active-test
     [questions]="questions"
-    (taskCompleted)="finishTest($event)"
+    (taskCompleted)="finishTest('Finish Test')"
   ></app-active-test>
 </mat-card>
 

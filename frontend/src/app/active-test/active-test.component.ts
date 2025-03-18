@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Question } from '../shared/question.model';
@@ -11,15 +11,13 @@ import { Question } from '../shared/question.model';
   styleUrl: './active-test.component.css',
 })
 export class ActiveTestComponent {
-  //@Input() questions: any[] = ['Example question 1']
-  @Input() questions: Question[] = []; //TO DO: receives real Gemini-generated questions from parent (GapAssessmentComponent)
+  @Input() questions: Question[] = [];
   currentQuestionIndex: number = 0;
   selectedAnswer: string | null = null;
   selectedAnswers: any[] = [];
+  correctAnswers: any[] = [];
 
   @Input() numberOfQuestions: number = 0;
-  @Output() taskCompleted = new EventEmitter<string>(); // EventEmitter to notify parent
-
   timeRemaining: number = 1800; // TO DO: create formula that calculates time or add it as input
   interval: any;
   //testStages = ['user-info', 'questions', 'completion'];
@@ -46,13 +44,8 @@ export class ActiveTestComponent {
       this.currentQuestionIndex++;
       this.selectedAnswer = null;
     } else {
-      this.submitTest();
+      this.currentStage = 'completion';
     }
-  }
-
-  submitTest() {
-    this.currentStage = 'completion';
-    this.taskCompleted.emit("Task is done! ✅"); // Notify parent
   }
 
   prevQuestion() {
@@ -85,5 +78,13 @@ export class ActiveTestComponent {
     const minutes = Math.floor(this.timeRemaining / 60);
     const seconds = this.timeRemaining % 60;
     return `${minutes}:${seconds.toString().padStart(2, '0')}`; // Ensures two-digit seconds
+  }
+
+  // TODO: Implement exit test
+  exitTest() {
+    localStorage.setItem('selectedAnswers', JSON.stringify([]));
+    localStorage.setItem('questions', JSON.stringify([]));
+
+    console.log('Test Exited');
   }
 }

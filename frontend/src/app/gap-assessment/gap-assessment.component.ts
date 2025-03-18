@@ -75,7 +75,7 @@ export class GapAssessmentComponent {
 
         // store the standards for GAP assessment visualization later
         this.standards = response.standards;
-        console.log("Generate standards api response: ", response.standards);
+        console.log('Generate standards api response: ', response.standards);
         2;
         // generate the test using the standards
         this.generateGapTest(formData, this.standards);
@@ -100,6 +100,7 @@ export class GapAssessmentComponent {
 
         this.questions = this.parseApiResponse(response);
         localStorage.setItem('questions', JSON.stringify(this.questions));
+        localStorage.setItem('selectedAnswers', JSON.stringify([]));
         console.log(this.questions);
       },
       error: (error) => {
@@ -150,8 +151,8 @@ export class GapAssessmentComponent {
   }
 
   finishTest(eventMessage: string) {
-    console.log("Received event from child:", eventMessage);
+    console.log('Received event from child:', eventMessage);
     this.testActive = false;
-    this.testComplete = true
+    this.testComplete = true;
   }
 }

@@ -54,6 +54,16 @@
       >
         Back
       </button>
+      <!-- <button
+        mat-raised-button
+        color="primary"
+        (click)="
+          currentQuestionIndex < questions.length - 1
+            ? nextQuestion()
+            : submitTest()
+        "
+      > -->
+
       <button mat-raised-button color="primary" (click)="nextQuestion()">
         {{ currentQuestionIndex < questions.length - 1 ? "Next" : "Submit" }}
       </button>
