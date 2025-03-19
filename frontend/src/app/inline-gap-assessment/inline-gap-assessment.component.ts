@@ -14,6 +14,7 @@ interface InlineGapAssessment {
     strength: 'Strong' | 'Moderate' | 'Weak' | null;
     description: string;
   }[];
+  improvementPlan: string;
 }
 
 @Component({
@@ -58,6 +59,8 @@ export class InlineGapAssessmentComponent {
           description: 'Writing and interpreting numerical expressions',
         },
       ],
+      improvementPlan:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     };
   }
 
