@@ -46,8 +46,6 @@
   <h2>Test Complete!</h2>
   <app-active-test [questions]="questions"></app-active-test> -->
 <!-- </mat-card> -->
-
-<mat-card *ngIf="testComplete">
+<div class="gap-assessment-container" *ngIf="testComplete">
   <app-inline-gap-assessment></app-inline-gap-assessment>
-  <!-- <app-active-test [questions]="questions"></app-active-test> -->
-</mat-card>
+</div>

@@ -12,7 +12,7 @@ interface InlineGapAssessment {
   standardsPerformance: {
     standard: string;
     strength: 'Strong' | 'Moderate' | 'Weak' | null;
-    recommendations: string;
+    description: string;
   }[];
 }
 
@@ -27,13 +27,35 @@ export class InlineGapAssessmentComponent {
   constructor() {
     // Placeholder assessment
     this.assessment = {
-      overallStrength: 'Strong',
-      performanceSummary: 'This student is strong.',
+      overallStrength: 'Moderate',
+      performanceSummary:
+        'This student shows a significant discrepancy in their test performance, excelling in some areas and completely failing in others. This suggests a possible issue with understanding specific mathematical concepts rather than a general lack of mathematical ability. A plan needs to address both the strengths and weaknesses.',
       standardsPerformance: [
         {
-          standard: 'K.0.4.1',
+          standard: 'K.OA.A.1',
           strength: 'Strong',
-          recommendations: 'No improvement needed',
+          description: 'Understanding addition and subtraction within 5',
+        },
+        {
+          standard: '4.NF.A.1',
+          strength: 'Strong',
+          description: 'Understanding equivalent fractions',
+        },
+        {
+          standard: '3.OA.A.7',
+          strength: 'Strong',
+          description: 'Multiplying and dividing numbers less than 100',
+        },
+        {
+          standard: '3.MD.C.5',
+          strength: 'Weak',
+          description:
+            'Understands concepts of area and relating area to multiplication and addition',
+        },
+        {
+          standard: '5.0A.A.2',
+          strength: 'Weak',
+          description: 'Writing and interpreting numerical expressions',
         },
       ],
     };
@@ -41,5 +63,18 @@ export class InlineGapAssessmentComponent {
 
   ngOnInit() {
     console.log(this.assessment);
+  }
+
+  getMasteryStandards() {
+    return this.assessment.standardsPerformance.filter(
+      (standard) => standard.strength === 'Strong'
+    );
+  }
+
+  getImprovementStandards() {
+    return this.assessment.standardsPerformance.filter(
+      (standard) =>
+        standard.strength === 'Weak' || standard.strength === 'Moderate'
+    );
   }
 }
