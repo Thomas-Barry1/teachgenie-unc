@@ -1,7 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Question } from '../shared/question.model';
+import { EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-active-test',
@@ -11,6 +12,7 @@ import { Question } from '../shared/question.model';
   styleUrl: './active-test.component.css',
 })
 export class ActiveTestComponent {
+  @Output() taskCompleted = new EventEmitter<void>();
   @Input() questions: Question[] = [];
   currentQuestionIndex: number = 0;
   selectedAnswer: string | null = null;
@@ -45,6 +47,7 @@ export class ActiveTestComponent {
       this.selectedAnswer = null;
     } else {
       this.currentStage = 'completion';
+      this.taskCompleted.emit();
     }
   }
 

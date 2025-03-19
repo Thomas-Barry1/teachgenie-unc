@@ -1,29 +1,34 @@
 mat-card {
-    margin: 20px;
-    padding: 20px;
-  }
+  margin: 20px;
+  padding: 20px;
+}
 
-  mat-form-field {
-    width: 100%;
-  }
+.gap-assessment-container {
+  margin: 20px;
+  padding: 20px;
+}
 
-  h1 {
-    color: #3f51b5;
-  }
+mat-form-field {
+  width: 100%;
+}
 
-  h2 {
-    color: #3f51b5;
-  }
+h1 {
+  color: #3f51b5;
+}
 
-  #test {
-    max-width: 800px;
-  }
+h2 {
+  color: #3f51b5;
+}
 
-  button {
-    color: #3f51b5;
-  }
+#test {
+  max-width: 800px;
+}
 
-  .buttons {
-    display: flex;
-    gap: 20px; /* Adjust spacing as needed */
-  }
+button {
+  color: #3f51b5;
+}
+
+.buttons {
+  display: flex;
+  gap: 20px; /* Adjust spacing as needed */
+}

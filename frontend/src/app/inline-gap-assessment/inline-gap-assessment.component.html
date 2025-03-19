@@ -1,0 +1,50 @@
+<mat-card class="mat-elevation-z8">
+  <h2>Performance Summary</h2>
+  <strong>{{ this.assessment.performanceSummary }} </strong>
+</mat-card>
+
+<div class="standard-column-container">
+  <mat-card class="standard-column-mastery">
+    <div class="title-container">
+      <mat-icon>stars</mat-icon>
+      <h2>Areas of Mastery</h2>
+    </div>
+    <div class="standard-column-mastery-content">
+      <div
+        class="standard-item"
+        *ngFor="let standard of this.getMasteryStandards()"
+      >
+        <mat-icon>circle</mat-icon>
+        <p>
+          <strong>{{ standard.standard }}: </strong> {{ standard.description }}
+        </p>
+      </div>
+    </div>
+  </mat-card>
+  <mat-card class="standard-column-weakness">
+    <div class="title-container">
+      <mat-icon>filter_tilt_shift</mat-icon>
+      <h2>Areas for Improvement</h2>
+    </div>
+    <div class="standard-column-weakness-content">
+      <div
+        class="standard-item"
+        *ngFor="let standard of this.getImprovementStandards()"
+      >
+        <mat-icon>circle</mat-icon>
+        <p>
+          <strong>{{ standard.standard }}: </strong> {{ standard.description }}
+        </p>
+      </div>
+    </div>
+  </mat-card>
+  <mat-card class="standard-column-improvement-plan">
+    <div class="title-container">
+      <mat-icon>trending_up</mat-icon>
+      <h2>Improvement Plan</h2>
+    </div>
+    <div class="content">
+      {{ this.assessment.improvementPlan }}
+    </div>
+  </mat-card>
+</div>
