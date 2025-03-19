@@ -51,15 +51,15 @@ export class GapAssessmentComponent {
       this.selectedFile = input.files[0];
     }
   }
-  createGapAssessment() {
-    console.log('Sending to backend');
-    this.apiService.generateGapAssessment(this.selectedFile).subscribe({
-      next: (val) => {
-        console.log('the service next call is here');
-      },
-    });
-    console.log('returned from the backend call');
-  }
+  // createGapAssessment() {
+  //   console.log('Sending to backend');
+  //   this.apiService.generateGapAssessment(this.selectedFile).subscribe({
+  //     next: (val) => {
+  //       console.log('the service next call is here');
+  //     },
+  //   });
+  //   console.log('returned from the backend call');
+  // }
 
   getFormData(): any {
     return this.gapTestForm.value;

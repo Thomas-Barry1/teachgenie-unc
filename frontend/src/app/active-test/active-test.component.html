@@ -37,14 +37,13 @@
         *ngFor="let option of questions[currentQuestionIndex].answerChoices"
         (click)="selectAnswer(option)"
       >
-        <div
-          class="circle"
-          [class.filled]="selectedAnswers[currentQuestionIndex] === option"
-        ></div>
+        <div class="circle"></div>
         <p>{{ option }}</p>
       </div>
     </div>
-
+    <!-- [class.filled]="
+    selectedAnswers[currentQuestionIndex].selected_answer === option
+  "  -->
     <div class="button-container">
       <button
         mat-raised-button
@@ -64,8 +63,25 @@
         "
       > -->
 
-      <button mat-raised-button color="primary" (click)="nextQuestion()">
-        {{ currentQuestionIndex < questions.length - 1 ? "Next" : "Submit" }}
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="nextQuestion()"
+        *ngIf="currentQuestionIndex < questions.length - 1"
+      >
+        {{ "Next" }}
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="nextQuestion()"
+        *ngIf="!(currentQuestionIndex < questions.length - 1)"
+        [disabled]="selectedAnswers.length < questions.length"
+      >
+        {{ "Submit" }}
+      </button>
+      <button (click)="show()">
+        {{ "show selected answers" }}
       </button>
     </div>
   </div>
