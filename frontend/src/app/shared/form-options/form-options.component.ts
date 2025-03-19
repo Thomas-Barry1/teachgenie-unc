@@ -21,7 +21,7 @@ export class FormOptionsComponent {
   @Input() showSkills: boolean = true;
   @Input() showQuestionTypes: boolean = false;
   @Input() showState: boolean = true;
-  @Input() testType: 'gap' | 'regular' = 'regular';
+  @Input() testType: string = 'regular'; //The other option is 'gap'
 
 
   questionTypes: string[] = ['Multiple Choice', 'True/False', 'Short Answer', 'Long Answer', 'Reading Passage', 'Bonus Question'];
