@@ -105,6 +105,9 @@ mat-card {
   width: 33%;
   height: 450px;
   text-wrap: wrap;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 
   .title-container {
     display: flex;
@@ -116,6 +119,12 @@ mat-card {
       margin: 0;
       padding: 0;
       color: #3f51b5;
+    }
+
+    .content {
+      text-wrap: wrap;
+      overflow-wrap: break-word;
+      width: 100%;
     }
 
     color: #3f51b5;
