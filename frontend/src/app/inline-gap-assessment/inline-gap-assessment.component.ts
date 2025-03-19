@@ -25,10 +25,17 @@ export class InlineGapAssessmentComponent {
   @Input() assessment: InlineGapAssessment;
 
   constructor() {
+    // Placeholder assessment
     this.assessment = {
-      overallStrength: null,
-      performanceSummary: '',
-      standardsPerformance: [],
+      overallStrength: 'Strong',
+      performanceSummary: 'This student is strong.',
+      standardsPerformance: [
+        {
+          standard: 'K.0.4.1',
+          strength: 'Strong',
+          recommendations: 'No improvement needed',
+        },
+      ],
     };
   }
 
