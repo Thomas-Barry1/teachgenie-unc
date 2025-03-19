@@ -95,12 +95,12 @@ export class GapAssessmentComponent {
         console.log("Raw API Response:", response);
         this.gapTestName = `${formData.state} ${formData.gradeLevel} Grade Level Standardized Test`;
 
-        // DEBUG: Map API response to Question model so questions/answers can populate active-test-component
-        // this.questions = response.map((q: any) => ({
-        //   text: q.Question,
-        //   options: q.AnswerChoices,
-        //   correctAnswer: q.CorrectAnswer
-        // }));
+        // DEBUG: Map API response to Question model 
+         this.questions = response.map((q: any) => ({
+           text: q.Question,
+           options: q.AnswerChoices,
+           correctAnswer: q.CorrectAnswer
+         }));
 
         this.gapTest = await this.markdownService.convert(response.test);
         this.stateService.setTestData(this.gapTest);
