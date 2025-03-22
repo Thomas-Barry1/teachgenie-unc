@@ -36,7 +36,7 @@ class FormRequest(BaseModel):
     gradeLevel: str = Form(None),
     commonCoreStandards: str = Form(None),
     skills: str = Form(None),
-    questionType: Union[List[str], str] = Form(None),  # Accepting multiple values
+    questionType: Union[List[str], str] = Form(None),
     state: str = Form(None),
     standards: Optional[str] = Form(None)
     
@@ -47,7 +47,7 @@ class Question(BaseModel):
 
 class Full_Question(BaseModel):
     question: Question
-    selected_answer: Optional[str]  # Matches `string | null` in TypeScript
+    selected_answer: Optional[str]
 
 class StandardPerformance(BaseModel):
     standard: str
@@ -55,7 +55,7 @@ class StandardPerformance(BaseModel):
     description: str
 
 class InlineGapAssessment(BaseModel):
-    overallStrength: Optional[str] #This can be string, modelerate or weak or null
+    overallStrength: Optional[str]
     performanceSummary: str
     standardsPerformance: List[StandardPerformance]
     improvementPlan: str
@@ -85,7 +85,7 @@ async def gap_test(request: FormRequest):
    return {"test" : test}
 
 def categorize_question(given_question):
-    prompt = f"What common core standard does this question belong to? {given_question}? Give the common core standard in the form like CCSS.3.MD.C.5.a or 3.NF.A.3"
+    prompt = f"What common core standard does this question belong to? {given_question}? Give the common core standard in the form like CCSS.3.MD.C.5.a or 3.NF.A.3. If there is no sinple CSSS standard because it is on multiple areas of knowledge or if it is closer to NGSS, please just give me the closest CCSS standard possible. If it is really impossible then give another standard like NGSS but please refrain from doing that at all costs."
     response = model.generate_content(prompt)
     
     # Only iterate 5 or more times if a bad response is received
@@ -104,7 +104,7 @@ def categorize_question(given_question):
         returnResp = "Error in AI response, try again or change request."
     else:
         returnResp = response.text
-        cleaned_up_returnResp = re.findall(r"\b[A-Z0-9]+.[A-Z]+.[A-Z]+.[0-9]+[a-z]?\b|\b[0-9].[A-Z]+.[A-Z]+.[0-9]+[a-z]?\b", response.text)
+        cleaned_up_returnResp = re.findall(r"\b[A-Z0-9]+.[A-Z]+.[A-Z]+.[0-9]+[a-z]?\b|\b[0-9]+[-.]?[A-Z]+[-.]?[A-Z]+[-.]?[0-9]?+[a-z]?\b|\b[A-Z]+[-.]?[0-9]+[-.]?[A-Z]+[-.]?[0-9]?+[-.]?[0-9]?\b|\b[0-9].[A-Z]+.[A-Z]+.[0-9]+[a-z]?\b", response.text)
     return returnResp, cleaned_up_returnResp
 
 @app.post("/api/gap-assessment")

@@ -51,7 +51,7 @@ export class ActiveTestComponent {
       //submitting
       const send_data:Full_Question[] = this.selectedAnswers;
       console.log("Sending this data to create gap_assessment:", send_data);
-      this.apiService.generateGapAssessment(this.selectedAnswers).subscribe({
+      this.apiService.generateGapAssessment(send_data).subscribe({
         next: (res)=>{
           console.log("response form full question api service", res)
         }
