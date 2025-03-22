@@ -50,51 +50,9 @@ export class ActiveTestComponent {
       console.log(this.selectedAnswers);
     } else {
       //submitting
-
-      // let random_testing_data: [string] = ['Sample stuff here'];
-      // console.log("Sending this data to create sample gap_assessment:", random_testing_data);
-      // this.apiService.generateSampleGapAssessment(random_testing_data).subscribe({
-      //   next: (res)=>{
-      //     console.log("Frontend respnsoe from sampleGapAssessment", res)
-      //   }
-      // });
-
-      // let question_sample_data: [Question] = [{
-      //   question: "Sample question",
-      //   answerChoices: ["A", "B", "C", "D"],
-      //   correctAnswer: "B"
-      // }];
-      // this.apiService.generateSampleQuestionArrayGapAssessment(question_sample_data).subscribe({
-      //   next: (res)=>{
-      //     console.log("question sample response: ", res)
-      //   }
-      // });
-
-
-      //conclusion: I can pass a nomal array as well as a question array but unable to pass fullquestionarray.
-
-
-      // let full_question_sample_data: [Full_Question] = [{
-      //   question: {
-      //     question: "Sample question",
-      //     answerChoices: ["A", "B", "C", "D"],
-      //     correctAnswer: "B"
-      //   },
-      //   selected_answer: "B"
-      // }];
-      
-      // console.log("Now sending a sample full question", full_question_sample_data);
-
-      // this.apiService.generateGapAssessment(full_question_sample_data).subscribe({
-      //   next: (res)=>{
-      //     console.log("response form fullquestionapiservice", res)
-      //   }
-      // })
-      
-      //wait also full quesiton can be sent. what is the problem then?
       const send_data:Full_Question[] = this.selectedAnswers;
       console.log("Sending this data to create gap_assessment:", send_data);
-      this.apiService.generateGapAssessment(this.selectedAnswers).subscribe({
+      this.apiService.generateGapAssessment(send_data).subscribe({
         next: (res)=>{
           console.log("Response from generating gap assessment", res);
           this.assessment = res;
