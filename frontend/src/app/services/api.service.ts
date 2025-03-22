@@ -24,15 +24,7 @@ export class ApiService {
     console.log("Made it to frontend api service generate gap assessment: ", given_full_questions);
     return this.http.post<any>(`${this.apiUrl}/gap-assessment`, given_full_questions);
   }
-  generateSampleGapAssessment(given_full_questions: [string]) : Observable<any>{
-    console.log("Made it to frontend api service generate gap assessment: ", given_full_questions);
-    return this.http.post<any>(`${this.apiUrl}/gap-assessment-sample`, given_full_questions);
-  }
-  generateSampleQuestionArrayGapAssessment(given_full_questions: [Question]) : Observable<any>{
-    console.log("Made it to frontend api service generate gap assessment: ", given_full_questions);
-    return this.http.post<any>(`${this.apiUrl}/gap-assessment-sample-question`, given_full_questions);
-  }
-
+  
   generateGapTest(formData: any): Observable<any> {
     console.log("Made to api service generateGapTest: ", formData);
     return this.http.post<any>(`${this.apiUrl}/gap-test`, formData);

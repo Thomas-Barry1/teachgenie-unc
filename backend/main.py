@@ -107,37 +107,6 @@ def categorize_question(given_question):
         cleaned_up_returnResp = re.findall(r"\b[A-Z0-9]+.[A-Z]+.[A-Z]+.[0-9]+[a-z]?\b|\b[0-9].[A-Z]+.[A-Z]+.[0-9]+[a-z]?\b", response.text)
     return returnResp, cleaned_up_returnResp
 
-@app.post("/api/gap-assessment-sample-question")
-#interface InlineGapAssessment {
-#   overallStrength: 'Strong' | 'Moderate' | 'Weak' | null;
-#   performanceSummary: string;
-#   standardsPerformance: {
-#     standard: string;
-#     strength: 'Strong' | 'Moderate' | 'Weak' | null;
-#     description: string;
-#   }[];
-#   improvementPlan: string;
-# }
-async def wrapper_gap_assessment(sample_given_questions: List[Question]):
-    print("Reached the sample backend API call, here are the sample_given_questions-question:", sample_given_questions)
-    return sample_given_questions
-@app.post("/api/gap-assessment-sample")
-#interface InlineGapAssessment {
-#   overallStrength: 'Strong' | 'Moderate' | 'Weak' | null;
-#   performanceSummary: string;
-#   standardsPerformance: {
-#     standard: string;
-#     strength: 'Strong' | 'Moderate' | 'Weak' | null;
-#     description: string;
-#   }[];
-#   improvementPlan: string;
-# }
-async def wrapper_gap_assessment(sample_given_questions: List[str]):
-    print("Reached the sample backend API call, here are the sample_given_questions:", sample_given_questions)
-    return sample_given_questions
-
-
-
 @app.post("/api/gap-assessment")
 #interface InlineGapAssessment {
 #   overallStrength: 'Strong' | 'Moderate' | 'Weak' | null;
@@ -277,8 +246,8 @@ async def generate_test(request: FormRequest):
     return returnResp
 
 def filter_strength_response(response):
-    valid_responses = ['Strong', 'Moderate', 'Weak']
-    response_text = response.strip()
+    valid_responses = ['strong', 'moderate', 'weak']
+    response_text = response.strip().lower()
 
     if response_text in valid_responses:
         return response_text
@@ -311,16 +280,16 @@ async def generate_gap_assessment(extracted_information):
         except:
             numIterations += 1
             print("Regenerate overall_strength")
-            overall_strength = model.generate_content(prompt)
+            overall_strength = model.generate_content(overall_strength_prompt)
             print("Test overall_strength: ", overall_strength)
     if numIterations == 5:
         returnResp = "Error in AI overall_strength, try again or change request."
     else:
         returnResp = overall_strength.text
     overall_strength = returnResp
-    print(f"The overall stength response after the prompt - BEFORE filter is : {overall_strength}")
+    print(f"The overall stength response - BEFORE filter: {overall_strength}")
     overall_strength = filter_strength_response(returnResp)
-    print(f"The overall stength response after the prompt - AFTER filter is : {overall_strength}")
+    print(f"The overall stength response - AFTER filter: {overall_strength}")
 
 
     #Now get the performacne summary
@@ -339,14 +308,14 @@ async def generate_gap_assessment(extracted_information):
         except:
             numIterations += 1
             print("Regenerate performance_summary")
-            performance_summary = model.generate_content(prompt)
+            performance_summary = model.generate_content(performance_summary_prompt)
             print("Test performance_summary: ", performance_summary)
     if numIterations == 5:
         returnResp = "Error in AI performance_summary, try again or change request."
     else:
         returnResp = performance_summary.text
     performance_summary = returnResp
-    print(f"The performance_summary response after the prompt is : {performance_summary}")
+    print(f"The performance_summary response: {performance_summary}")
     # return returnResp
     
     #Now get the improvement plan
@@ -365,23 +334,26 @@ async def generate_gap_assessment(extracted_information):
         except:
             numIterations += 1
             print("Regenerate improvement_plan")
-            improvement_plan = model.generate_content(prompt)
+            improvement_plan = model.generate_content(improvement_plan_prompt)
             print("Test improvement_plan: ", improvement_plan)
     if numIterations == 5:
         returnResp = "Error in AI improvement_plan, try again or change request."
     else:
         returnResp = improvement_plan.text
     improvement_plan = returnResp
-    print(f"The improvement_plan response after the prompt is : {improvement_plan}")
+    print(f"The improvement_plan response: {improvement_plan}")
+
 
     #now to get the standards performance, ahve to ask multiple prompts for each standard.
     standardsPerformance = []
     prompt_second = 'A teacher has a student whose test results were analyzed. In particular,'
     for category, score in extracted_information.items():
-        print("Gonna reset the model to ask specific questions for each standard")
-        reset_model()
+        print("Gonna get new the model to ask specific questions for each standard")
+        new_model = genai.GenerativeModel('gemini-1.5-flash')
+        # reset_model()
         particular_standards_performance_prompt = prompt_second + (f"in the {category} category, they scored {score}%,")
         #now we have the prompt ready
+
         #TODO: Gemini is not giving me a one word answer for the stength for each standard. Find a solution to this.
         print(f"particular_standards_performance_prompt: {particular_standards_performance_prompt}")
         particular_standards_performance_prompt_strength = particular_standards_performance_prompt + (f"Can you give me a one word answer of the strength of this student for this category? Either tell me Stong, Moderate, or Weak. Please only one word answer ")
@@ -395,16 +367,16 @@ async def generate_gap_assessment(extracted_information):
             except:
                 numIterations += 1
                 print("Regenerate particular_standards_performance_prompt_strength")
-                particular_standards_performance_prompt_strength = model.generate_content(prompt)
+                particular_standards_performance_prompt_strength = new_model.generate_content(particular_standards_performance_prompt_strength)
                 print("Test particular_standards_performance_prompt_strength: ", particular_standards_performance_prompt_strength)
         if numIterations == 5:
             returnResp = "Error in AI particular_standards_performance_prompt_strength, try again or change request."
         else:
             returnResp = particular_standards_performance_prompt_strength.text
         particular_standards_performance_prompt_strength = returnResp
-        print(f"The particular_standards_performance_prompt_strength response after the prompt is -before applying filter : {particular_standards_performance_prompt_strength}")
+        print(f"The particular_standards_performance_prompt_strength response - before filter : {particular_standards_performance_prompt_strength}")
         particular_standards_performance_prompt_strength = filter_strength_response(returnResp)
-        print(f"The particular_standards_performance_prompt_strength response after the prompt is -AFTER applying filter : {particular_standards_performance_prompt_strength}")
+        print(f"The particular_standards_performance_prompt_strength response - after filter : {particular_standards_performance_prompt_strength}")
 
         particular_standards_performance_prompt_description = particular_standards_performance_prompt + (f"Can you give me a the description of this student performance for this category?")
         print(f"particular_standards_performance_prompt_description prompt: {particular_standards_performance_prompt_description}")
@@ -417,14 +389,14 @@ async def generate_gap_assessment(extracted_information):
             except:
                 numIterations += 1
                 print("Regenerate particular_standards_performance_prompt_description")
-                particular_standards_performance_prompt_description = model.generate_content(prompt)
+                particular_standards_performance_prompt_description = new_model.generate_content(particular_standards_performance_prompt_description)
                 print("Test particular_standards_performance_prompt_description: ", particular_standards_performance_prompt_description)
         if numIterations == 5:
             returnResp = "Error in AI particular_standards_performance_prompt_description, try again or change request."
         else:
             returnResp = particular_standards_performance_prompt_description.text
         particular_standards_performance_prompt_description = returnResp
-        print(f"The particular_standards_performance_prompt_description response after the prompt is : {particular_standards_performance_prompt_description}")
+        print(f"The particular_standards_performance_prompt_description response is : {particular_standards_performance_prompt_description}")
 
         #all the values are ready
         standardsPerformance.append({
