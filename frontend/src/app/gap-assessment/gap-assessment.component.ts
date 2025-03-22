@@ -193,6 +193,7 @@ export class GapAssessmentComponent {
 
   finishTest(eventMessage: any) {
     console.log('Received event from child:', eventMessage);
+    this.assessment = eventMessage
     this.testActive = false;
     this.testComplete = true;
   }

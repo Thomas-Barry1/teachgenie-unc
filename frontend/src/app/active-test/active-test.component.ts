@@ -26,6 +26,7 @@ export class ActiveTestComponent {
   //testStages = ['user-info', 'questions', 'completion'];
   currentStage = '';
   userInfoForm: FormGroup; // TO DO: connect user data to backend
+  assessment: any;
 
   constructor(private fb: FormBuilder, private apiService: ApiService) {
     this.userInfoForm = this.fb.group({
@@ -95,12 +96,13 @@ export class ActiveTestComponent {
       console.log("Sending this data to create gap_assessment:", send_data);
       this.apiService.generateGapAssessment(this.selectedAnswers).subscribe({
         next: (res)=>{
-          console.log("response form full question api service", res)
+          console.log("Response from generating gap assessment", res);
+          this.assessment = res;
+          this.taskCompleted.emit(this.assessment);
         }
       })
       
       this.currentStage = 'completion';
-      this.taskCompleted.emit();
     }
   }
 
