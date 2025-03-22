@@ -5,6 +5,8 @@ import { StateService } from '../services/state.service';
 import { MarkdownService } from '../services/markdown.service';
 import { SafeHtml } from '@angular/platform-browser';
 import { Question } from '../shared/question.model';
+import { InlineGapAssessment } from '../shared/inline_gap_assessment.models';
+import { InlineGapAssessmentComponent } from '../inline-gap-assessment/inline-gap-assessment.component';
 
 @Component({
   selector: 'app-gap-assessment',
@@ -25,6 +27,9 @@ export class GapAssessmentComponent {
   questions: Question[] = [];
   standards: any; //not sure types yet
 
+  // Pass to the inline gap analysis
+  assessment: InlineGapAssessment;
+
   constructor(
     private apiService: ApiService,
     private fb: FormBuilder,
@@ -43,6 +48,42 @@ export class GapAssessmentComponent {
 
     // load existing data if available
     this.gapTest = this.stateService.getTestData();
+
+    this.assessment = {
+      overallStrength: 'Moderate',
+      performanceSummary:
+        'This student shows a significant discrepancy in their test performance, excelling in some areas and completely failing in others. This suggests a possible issue with understanding specific mathematical concepts rather than a general lack of mathematical ability. A plan needs to address both the strengths and weaknesses.',
+      standardsPerformance: [
+        {
+          standard: 'K.OA.A.1',
+          strength: 'Strong',
+          description: 'Understanding addition and subtraction within 5',
+        },
+        {
+          standard: '4.NF.A.1',
+          strength: 'Strong',
+          description: 'Understanding equivalent fractions',
+        },
+        {
+          standard: '3.OA.A.7',
+          strength: 'Strong',
+          description: 'Multiplying and dividing numbers less than 100',
+        },
+        {
+          standard: '3.MD.C.5',
+          strength: 'Weak',
+          description:
+            'Understands concepts of area and relating area to multiplication and addition',
+        },
+        {
+          standard: '5.0A.A.2',
+          strength: 'Weak',
+          description: 'Writing and interpreting numerical expressions',
+        },
+      ],
+      improvementPlan:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    };
   }
 
   onFileSelected(event: Event) {

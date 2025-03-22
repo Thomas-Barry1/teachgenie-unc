@@ -5,17 +5,7 @@ import { StateService } from '../services/state.service';
 import { MarkdownService } from '../services/markdown.service';
 import { SafeHtml } from '@angular/platform-browser';
 import { Question } from '../shared/question.model';
-
-interface InlineGapAssessment {
-  overallStrength: 'Strong' | 'Moderate' | 'Weak' | null;
-  performanceSummary: string;
-  standardsPerformance: {
-    standard: string;
-    strength: 'Strong' | 'Moderate' | 'Weak' | null;
-    description: string;
-  }[];
-  improvementPlan: string;
-}
+import { InlineGapAssessment } from '../shared/inline_gap_assessment.models';
 
 @Component({
   selector: 'app-inline-gap-assessment',
