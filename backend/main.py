@@ -206,7 +206,8 @@ async def wrapper_gap_assessment(given_questions: List[Full_Question] ):
     gap_assessment = await generate_gap_assessment(category_final_grades)
     return {"category_final_grades": category_final_grades, "gap_assessment": gap_assessment}
 
-
+def reset_model():
+    return model.start_chat(history=[])
 
 # Generating standards for gap test 
 @app.post("/api/gap-standards")
@@ -316,8 +317,10 @@ async def generate_gap_assessment(extracted_information):
         returnResp = "Error in AI overall_strength, try again or change request."
     else:
         returnResp = overall_strength.text
+    overall_strength = returnResp
+    print(f"The overall stength response after the prompt - BEFORE filter is : {overall_strength}")
     overall_strength = filter_strength_response(returnResp)
-    print(f"The overall stength response after the prompt is : {overall_strength}")
+    print(f"The overall stength response after the prompt - AFTER filter is : {overall_strength}")
 
 
     #Now get the performacne summary
@@ -345,14 +348,41 @@ async def generate_gap_assessment(extracted_information):
     performance_summary = returnResp
     print(f"The performance_summary response after the prompt is : {performance_summary}")
     # return returnResp
-
+    
+    #Now get the improvement plan
+    improvement_plan_prompt = prompt + (f"Can you create a plan this student and create plans on how they can improve?\n")
+    print(f"improvement_plan_prompt to be passed to genai: {improvement_plan_prompt}")
+    
+    improvement_plan = model.generate_content(improvement_plan_prompt)
+    print("Test improvement_plan: ", improvement_plan)
+    # Only iterate 5 or more times if a bad improvement_plan is received
+    numIterations = 0
+    isValidResp = False
+    while not isValidResp and numIterations < 5:
+        try:
+            improvement_plan.text
+            isValidResp = True
+        except:
+            numIterations += 1
+            print("Regenerate improvement_plan")
+            improvement_plan = model.generate_content(prompt)
+            print("Test improvement_plan: ", improvement_plan)
+    if numIterations == 5:
+        returnResp = "Error in AI improvement_plan, try again or change request."
+    else:
+        returnResp = improvement_plan.text
+    improvement_plan = returnResp
+    print(f"The improvement_plan response after the prompt is : {improvement_plan}")
 
     #now to get the standards performance, ahve to ask multiple prompts for each standard.
     standardsPerformance = []
     prompt_second = 'A teacher has a student whose test results were analyzed. In particular,'
     for category, score in extracted_information.items():
+        print("Gonna reset the model to ask specific questions for each standard")
+        reset_model()
         particular_standards_performance_prompt = prompt_second + (f"in the {category} category, they scored {score}%,")
         #now we have the prompt ready
+        #TODO: Gemini is not giving me a one word answer for the stength for each standard. Find a solution to this.
         print(f"particular_standards_performance_prompt: {particular_standards_performance_prompt}")
         particular_standards_performance_prompt_strength = particular_standards_performance_prompt + (f"Can you give me a one word answer of the strength of this student for this category? Either tell me Stong, Moderate, or Weak. Please only one word answer ")
         print(f"particular_standards_performance_prompt_strength prompt: {particular_standards_performance_prompt_strength}")
@@ -371,8 +401,10 @@ async def generate_gap_assessment(extracted_information):
             returnResp = "Error in AI particular_standards_performance_prompt_strength, try again or change request."
         else:
             returnResp = particular_standards_performance_prompt_strength.text
+        particular_standards_performance_prompt_strength = returnResp
+        print(f"The particular_standards_performance_prompt_strength response after the prompt is -before applying filter : {particular_standards_performance_prompt_strength}")
         particular_standards_performance_prompt_strength = filter_strength_response(returnResp)
-        print(f"The particular_standards_performance_prompt_strength response after the prompt is : {particular_standards_performance_prompt_strength}")
+        print(f"The particular_standards_performance_prompt_strength response after the prompt is -AFTER applying filter : {particular_standards_performance_prompt_strength}")
 
         particular_standards_performance_prompt_description = particular_standards_performance_prompt + (f"Can you give me a the description of this student performance for this category?")
         print(f"particular_standards_performance_prompt_description prompt: {particular_standards_performance_prompt_description}")
@@ -400,30 +432,7 @@ async def generate_gap_assessment(extracted_information):
             "description": particular_standards_performance_prompt_description,
             "strength": particular_standards_performance_prompt_strength
         })
-    #Now get the improvement plan
-    improvement_plan_prompt = prompt + (f"Can you create a plan this student and create plans on how they can improve?\n")
-    print(f"improvement_plan_prompt to be passed to genai: {improvement_plan_prompt}")
     
-    improvement_plan = model.generate_content(improvement_plan_prompt)
-    print("Test improvement_plan: ", improvement_plan)
-    # Only iterate 5 or more times if a bad improvement_plan is received
-    numIterations = 0
-    isValidResp = False
-    while not isValidResp and numIterations < 5:
-        try:
-            improvement_plan.text
-            isValidResp = True
-        except:
-            numIterations += 1
-            print("Regenerate improvement_plan")
-            improvement_plan = model.generate_content(prompt)
-            print("Test improvement_plan: ", improvement_plan)
-    if numIterations == 5:
-        returnResp = "Error in AI improvement_plan, try again or change request."
-    else:
-        returnResp = improvement_plan.text
-    improvement_plan = returnResp
-    print(f"The improvement_plan response after the prompt is : {improvement_plan}")
     print(f"""overallStrength={overall_strength},performanceSummary={performance_summary}, standardsPerformance={standardsPerformance},  improvementPlan={improvement_plan}""")
     
     #I am running into validation errors herre 
