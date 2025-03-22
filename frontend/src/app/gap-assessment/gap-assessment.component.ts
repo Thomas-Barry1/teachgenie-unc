@@ -150,7 +150,7 @@ export class GapAssessmentComponent {
     this.generateStandards();
   }
 
-  finishTest(eventMessage: string) {
+  finishTest(eventMessage: any) {
     console.log('Received event from child:', eventMessage);
     this.testActive = false;
     this.testComplete = true;
