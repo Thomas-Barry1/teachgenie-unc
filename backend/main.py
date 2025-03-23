@@ -84,9 +84,9 @@ async def gap_test(request: FormRequest):
    test = await generate_gap_test(request)
    return {"test" : test}
 
-def categorize_question(given_question):
-    prompt = f"What common core standard does this question belong to? {given_question}? Give the common core standard in the form like CCSS.3.MD.C.5.a or 3.NF.A.3. If there is no sinple CSSS standard because it is on multiple areas of knowledge or if it is closer to NGSS, please just give me the closest CCSS standard possible. If it is really impossible then give another standard like NGSS but please refrain from doing that at all costs."
-    response = model.generate_content(prompt)
+def ask_model(given_model, prompt):
+    print("Asking the following question to model: ", prompt)
+    response = given_model.generate_content(prompt)
     
     # Only iterate 5 or more times if a bad response is received
     numIterations = 0
@@ -98,15 +98,23 @@ def categorize_question(given_question):
         except:
             numIterations += 1
             print("Regenerate response")
-            response = model.generate_content(prompt)
+            response = given_model.generate_content(prompt)
             print("Test response: ", response)
     if numIterations == 5:
         returnResp = "Error in AI response, try again or change request."
     else:
         returnResp = response.text
-        print("Return response in categorize question: ", returnResp)
-        cleaned_up_returnResp = re.findall(r"\b[A-Z]+\.[A-Z]+\.[A-Z]+\.[A-Z]+\.[0-9]+\b", response.text)
-    return returnResp, cleaned_up_returnResp
+    print(f"***given_model Response:*** \nPrompt: {prompt}\nResponse:{returnResp}")
+    return returnResp
+def categorize_question(given_question):
+    prompt = f"What common core standard does this question belong to? {given_question}? Give the exactly ONE(NOT MORE THAN ONE) common core standard in the form like CCSS.3.MD.C.5.a or 3.NF.A.3."
+    category = ask_model(model, prompt)
+    cleaned_up_category = re.findall(r"\b[A-Z0-9]+\.[A-Z]+\.[A-Z]+\.[0-9]+[a-z]?\b|\b[0-9]+[-.]?[A-Z]+[-.]?[A-Z]+[-.]?[0-9]?[a-z]?\b|\b[A-Z]+[-.]?[0-9]+[-.]?[A-Z]+[-.]?[0-9]?[-.]?[0-9]?\b|\b[0-9]?\.[A-Z]+\.[A-Z]?\.[0-9]?[a-z]?\b", category)
+    if not cleaned_up_category:
+        print("No category was assigned, so gonna regenerate")
+        prompt = f"The following question does not belong to a common core standard, but can you please give me a one word answer to how you can catagorize it (base it on the context of the question). Please make it exactly one word. Here is the question: {given_question}"
+        cleaned_up_category = ask_model(model, prompt)
+    return cleaned_up_category
 
 @app.post("/api/gap-assessment")
 #interface InlineGapAssessment {
@@ -129,9 +137,7 @@ async def wrapper_gap_assessment(given_questions: List[Full_Question] ):
         student_answer = question_iterator.selected_answer
         correct_answer = question_iterator.question.correctAnswer
 
-        full_response, category = categorize_question(question)
-        print(f"The full response for {question}: {full_response}, and the category is :{category}")
-        # Append as a dictionary to the list
+        category = categorize_question(question)
         added_category_list.append({
             "question": question,
             "student_answer": student_answer,
@@ -143,11 +149,10 @@ async def wrapper_gap_assessment(given_questions: List[Full_Question] ):
     category_scores = {}
 
     for item in added_category_list:
-        #If ["category"] is null, there was no category assigned by gemini.
-        if not item["category"]:
+        if not item["category"]: #This should never be trigged as I modified the categorize_question method to assign a category even if no CSSS standard was assigned
             category = "unasssigned_category"
         else:
-            category = item["category"][0] 
+            category = item["category"]
             
         student_answer = item["student_answer"].strip().lower()
         correct_answer = item["correct_answer"].strip().lower()
@@ -162,7 +167,6 @@ async def wrapper_gap_assessment(given_questions: List[Full_Question] ):
         category_scores[category]["question_count"] += 1
 
     print("Category Scores: ", category_scores)
-    # Calculate overall grade for each category (convert to percentage 0-100%)
     category_final_grades = {}
     for category, data in category_scores.items():
         total_score = data["total_score"]
@@ -177,17 +181,12 @@ async def wrapper_gap_assessment(given_questions: List[Full_Question] ):
     print("Final gap assessment: ", gap_assessment)
     return {"category_final_grades": category_final_grades, "gap_assessment": gap_assessment}
 
-def reset_model():
-    return model.start_chat(history=[])
-
-# Generating standards for gap test 
 @app.post("/api/gap-standards")
 async def gap_standards(request: FormRequest): 
     print("Made it to main.py")
     standards =  await generate_standards(request)
     return {"standards": standards}
 
-# Load .env environment variables
 load_dotenv()
 
 api_key = os.getenv("API_KEY")
@@ -197,11 +196,9 @@ if not api_key:
 
 genai.configure(api_key=os.environ["API_KEY"])
 
-# Different models: https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 async def generate_test(request: FormRequest):
-    # Construct the prompt based on user input
     prompt = f"Write a test for a teacher on the topic '{request.topic}', and include answer key at end."
 
     if request.numberOfQuestions and (type(request.numberOfQuestions) is not type((Form(None),))):
@@ -246,7 +243,8 @@ async def generate_test(request: FormRequest):
     else:
         returnResp = response.text
     return returnResp
-
+def get_new_model():
+    return genai.GenerativeModel('gemini-1.5-flash')
 def filter_strength_response(response):
     valid_responses = ['strong', 'moderate', 'weak']
     response_text = response.strip().lower()
@@ -258,153 +256,59 @@ def filter_strength_response(response):
     
 async def generate_gap_assessment(extracted_information):
     print("INSIDE generate_gap_assessment")
-    #Make the prompt to ask genai to create appropriate test
     prompt = 'A teacher has a student whose test results were analyzed. In particular,'
-    print(extracted_information.keys())
-    print(extracted_information.values())
-    
     for category, score in extracted_information.items():
         prompt += (f"in the {category} category, they scored {score}%,")
 
-    #First, ask for overall_strength
+    #Ask for overall_strength
     overall_strength_prompt = prompt + (f"Can you give me a one word answer of the overall strength of this student. Either tell me Stong, Moderate, or Weak. Please only one word answer")
-    print(f"overall_strength_prompt to be passed to genai: {overall_strength_prompt}")
+    overall_strength = ask_model(model, overall_strength_prompt)
 
-    overall_strength = model.generate_content(overall_strength_prompt)
-    print("Test overall_strength: ", overall_strength)
-    # Only iterate 5 or more times if a bad overall_strength is received
-    numIterations = 0
-    isValidResp = False
-    while not isValidResp and numIterations < 5:
-        try:
-            overall_strength.text
-            isValidResp = True
-        except:
-            numIterations += 1
-            print("Regenerate overall_strength")
-            overall_strength = model.generate_content(overall_strength_prompt)
-            print("Test overall_strength: ", overall_strength)
-    if numIterations == 5:
-        returnResp = "Error in AI overall_strength, try again or change request."
-    else:
-        returnResp = overall_strength.text
-    overall_strength = returnResp
+    #Filter overall_strength: Weak,Moderate,Strong
     print(f"The overall stength response - BEFORE filter: {overall_strength}")
-    overall_strength = filter_strength_response(returnResp)
+    overall_strength = filter_strength_response(overall_strength)
     print(f"The overall stength response - AFTER filter: {overall_strength}")
 
 
-    #Now get the performacne summary
+    #Ask for performance_summary
     performance_summary_prompt = prompt + (f"Can you create performance summary for this student?\n")
-    print(f"performance_summary_prompt to be passed to genai: {performance_summary_prompt}")
+    performance_summary = ask_model(model, performance_summary_prompt)
     
-    performance_summary = model.generate_content(performance_summary_prompt)
-    print("Test performance_summary: ", performance_summary)
-    # Only iterate 5 or more times if a bad performance_summary is received
-    numIterations = 0
-    isValidResp = False
-    while not isValidResp and numIterations < 5:
-        try:
-            performance_summary.text
-            isValidResp = True
-        except:
-            numIterations += 1
-            print("Regenerate performance_summary")
-            performance_summary = model.generate_content(performance_summary_prompt)
-            print("Test performance_summary: ", performance_summary)
-    if numIterations == 5:
-        returnResp = "Error in AI performance_summary, try again or change request."
-    else:
-        returnResp = performance_summary.text
-    performance_summary = returnResp
-    print(f"The performance_summary response: {performance_summary}")
-    # return returnResp
-    
-    #Now get the improvement plan
+    ##Ask for improvement_plan
     improvement_plan_prompt = prompt + (f"Can you create a plan this student and create plans on how they can improve?\n")
-    print(f"improvement_plan_prompt to be passed to genai: {improvement_plan_prompt}")
-    
-    improvement_plan = model.generate_content(improvement_plan_prompt)
-    print("Test improvement_plan: ", improvement_plan)
-    # Only iterate 5 or more times if a bad improvement_plan is received
-    numIterations = 0
-    isValidResp = False
-    while not isValidResp and numIterations < 5:
-        try:
-            improvement_plan.text
-            isValidResp = True
-        except:
-            numIterations += 1
-            print("Regenerate improvement_plan")
-            improvement_plan = model.generate_content(improvement_plan_prompt)
-            print("Test improvement_plan: ", improvement_plan)
-    if numIterations == 5:
-        returnResp = "Error in AI improvement_plan, try again or change request."
-    else:
-        returnResp = improvement_plan.text
-    improvement_plan = returnResp
-    print(f"The improvement_plan response: {improvement_plan}")
+    improvement_plan = ask_model(model, improvement_plan_prompt)
 
+    #for each standard
+        #Strength
+        #Description
 
-    #now to get the standards performance, ahve to ask multiple prompts for each standard.
     standardsPerformance = []
     prompt_second = 'A teacher has a student whose test results were analyzed. In particular,'
     for category, score in extracted_information.items():
+
         print("Gonna get new the model to ask specific questions for each standard")
-        new_model = genai.GenerativeModel('gemini-1.5-flash')
-        # reset_model()
+        new_model = get_new_model()
+
         particular_standards_performance_prompt = prompt_second + (f"in the {category} category, they scored {score}%,")
-        #now we have the prompt ready
 
-        #TODO: Gemini is not giving me a one word answer for the stength for each standard. Find a solution to this.
         print(f"particular_standards_performance_prompt: {particular_standards_performance_prompt}")
-        particular_standards_performance_prompt_strength = particular_standards_performance_prompt + (f"Can you give me a one word answer of the strength of this student for this category? Either tell me Stong, Moderate, or Weak. Please only one word answer ")
-        print(f"particular_standards_performance_prompt_strength prompt: {particular_standards_performance_prompt_strength}")
-        numIterations = 0
-        isValidResp = False
-        while not isValidResp and numIterations < 5:
-            try:
-                particular_standards_performance_prompt_strength.text
-                isValidResp = True
-            except:
-                numIterations += 1
-                print("Regenerate particular_standards_performance_prompt_strength")
-                particular_standards_performance_prompt_strength = new_model.generate_content(particular_standards_performance_prompt_strength)
-                print("Test particular_standards_performance_prompt_strength: ", particular_standards_performance_prompt_strength)
-        if numIterations == 5:
-            returnResp = "Error in AI particular_standards_performance_prompt_strength, try again or change request."
-        else:
-            returnResp = particular_standards_performance_prompt_strength.text
-        particular_standards_performance_prompt_strength = returnResp
-        print(f"The particular_standards_performance_prompt_strength response - before filter : {particular_standards_performance_prompt_strength}")
-        particular_standards_performance_prompt_strength = filter_strength_response(returnResp)
-        print(f"The particular_standards_performance_prompt_strength response - after filter : {particular_standards_performance_prompt_strength}")
+        particular_strength_prompt = particular_standards_performance_prompt + (f"Can you give me a one word answer of the strength of this student for this category? Either tell me Stong, Moderate, or Weak. Please only one word answer ")
+        particular_strength = ask_model(new_model, particular_strength_prompt)
 
-        particular_standards_performance_prompt_description = particular_standards_performance_prompt + (f"Can you give me a the description of this student performance for this category?")
-        print(f"particular_standards_performance_prompt_description prompt: {particular_standards_performance_prompt_description}")
-        numIterations = 0
-        isValidResp = False
-        while not isValidResp and numIterations < 5:
-            try:
-                particular_standards_performance_prompt_description.text
-                isValidResp = True
-            except:
-                numIterations += 1
-                print("Regenerate particular_standards_performance_prompt_description")
-                particular_standards_performance_prompt_description = new_model.generate_content(particular_standards_performance_prompt_description)
-                print("Test particular_standards_performance_prompt_description: ", particular_standards_performance_prompt_description)
-        if numIterations == 5:
-            returnResp = "Error in AI particular_standards_performance_prompt_description, try again or change request."
-        else:
-            returnResp = particular_standards_performance_prompt_description.text
-        particular_standards_performance_prompt_description = returnResp
-        print(f"The particular_standards_performance_prompt_description response is : {particular_standards_performance_prompt_description}")
+
+        print(f"The particular_strength response - before filter : {particular_strength}")
+        particular_strength = filter_strength_response(particular_strength)
+        print(f"The particular_standards_performance_prompt_strength response - after filter : {particular_strength}")
+
+        particular_description_prompt = particular_standards_performance_prompt + (f"Can you give me a the description of this student performance for this category?")
+        print(f"particular_description_prompt: {particular_description_prompt}")
+        particular_description = ask_model(new_model, particular_description_prompt)
 
         #all the values are ready
         standardsPerformance.append({
             "standard": category,
-            "description": particular_standards_performance_prompt_description,
-            "strength": particular_standards_performance_prompt_strength
+            "description": particular_description,
+            "strength": particular_strength
         })
     
     print(f"""overallStrength={overall_strength},performanceSummary={performance_summary}, standardsPerformance={standardsPerformance},  improvementPlan={improvement_plan}""")
