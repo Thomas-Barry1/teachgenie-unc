@@ -111,7 +111,7 @@ export class GapAssessmentComponent {
     const formData = this.getFormData();
 
     this.apiService.generateStandards(formData).subscribe({
-      next: (response: any) => {
+      next: async (response: any) => {
         console.log('Made it back to generate standards component');
 
         // store the standards for GAP assessment visualization later
@@ -193,7 +193,7 @@ export class GapAssessmentComponent {
 
   finishTest(eventMessage: any) {
     console.log('Received event from child:', eventMessage);
-    this.assessment = eventMessage
+    this.assessment = eventMessage.gap_assessment;
     this.testActive = false;
     this.testComplete = true;
   }

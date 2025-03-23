@@ -105,7 +105,7 @@ def categorize_question(given_question):
     else:
         returnResp = response.text
         print("Return response in categorize question: ", returnResp)
-        cleaned_up_returnResp = re.findall(r"\b[A-Z0-9]+.[A-Z]+.[A-Z]+.[0-9]+[a-z]?\b|\b[0-9]+[-.]?[A-Z]+[-.]?[A-Z]+[-.]?[0-9]?+[a-z]?\b|\b[A-Z]+[-.]?[0-9]+[-.]?[A-Z]+[-.]?[0-9]?+[-.]?[0-9]?\b|\b[0-9].[A-Z]+.[A-Z]+.[0-9]+[a-z]?\b", response.text)
+        cleaned_up_returnResp = re.findall(r"\b[A-Z]+\.[A-Z]+\.[A-Z]+\.[A-Z]+\.[0-9]+\b", response.text)
     return returnResp, cleaned_up_returnResp
 
 @app.post("/api/gap-assessment")
@@ -174,6 +174,7 @@ async def wrapper_gap_assessment(given_questions: List[Full_Question] ):
     print("Final categorized grades in percentages:", category_final_grades)
     print("Going to call generate_gap_assessment")
     gap_assessment = await generate_gap_assessment(category_final_grades)
+    print("Final gap assessment: ", gap_assessment)
     return {"category_final_grades": category_final_grades, "gap_assessment": gap_assessment}
 
 def reset_model():

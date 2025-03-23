@@ -55,7 +55,7 @@ export class InlineGapAssessmentComponent {
   }
 
   ngOnInit() {
-    console.log(this.assessment);
+    console.log("On init for inline gap assessment: ", this.assessment);
   }
 
   getMasteryStandards() {
