@@ -105,7 +105,7 @@ def categorize_question(given_question):
     else:
         returnResp = response.text
         print("Return response in categorize question: ", returnResp)
-        cleaned_up_returnResp = re.findall(r"\b[A-Z]+\.[A-Z]+\.[A-Z]+\.[A-Z]+\.[0-9]+\b", response.text)
+        cleaned_up_returnResp = re.findall(r"\b[A-Z0-9]+.[A-Z]+.[A-Z]+.[0-9]+[a-z]?\b|\b[0-9]+[-.]?[A-Z]+[-.]?[A-Z]+[-.]?[0-9]?[a-z]?\b|\b[A-Z]+[-.]?[0-9]+[-.]?[A-Z]+[-.]?[0-9]?[-.]?[0-9]?\b|\b[0-9].[A-Z]+.[A-Z]+.[0-9]+[a-z]?\b", response.text) 
     return returnResp, cleaned_up_returnResp
 
 @app.post("/api/gap-assessment")
