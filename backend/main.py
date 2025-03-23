@@ -104,6 +104,7 @@ def categorize_question(given_question):
         returnResp = "Error in AI response, try again or change request."
     else:
         returnResp = response.text
+        print("Return response in categorize question: ", returnResp)
         cleaned_up_returnResp = re.findall(r"\b[A-Z0-9]+.[A-Z]+.[A-Z]+.[0-9]+[a-z]?\b|\b[0-9]+[-.]?[A-Z]+[-.]?[A-Z]+[-.]?[0-9]?+[a-z]?\b|\b[A-Z]+[-.]?[0-9]+[-.]?[A-Z]+[-.]?[0-9]?+[-.]?[0-9]?\b|\b[0-9].[A-Z]+.[A-Z]+.[0-9]+[a-z]?\b", response.text)
     return returnResp, cleaned_up_returnResp
 
