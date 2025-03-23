@@ -60,14 +60,14 @@ export class InlineGapAssessmentComponent {
 
   getMasteryStandards() {
     return this.assessment.standardsPerformance.filter(
-      (standard) => standard.strength === 'Strong'
+      (standard) => standard.strength === 'Strong' || standard.strength === "strong"
     );
   }
 
   getImprovementStandards() {
     return this.assessment.standardsPerformance.filter(
       (standard) =>
-        standard.strength === 'Weak' || standard.strength === 'Moderate'
+        standard.strength === 'Weak' || standard.strength === 'Moderate' || standard.strength === "weak" || standard.strength === "moderate"
     );
   }
 }
