@@ -22,6 +22,19 @@
   </div>
 
   <div
+    *ngIf="questions.length === 0 && currentStage === 'questions'"
+    class="loading-container"
+  >
+    <mat-spinner></mat-spinner>
+    <p>Generating customized test ...</p>
+  </div>
+
+  <div *ngIf="currentStage === 'completion'" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Analyzing Results ...</p>
+  </div>
+
+  <div
     class="questions"
     *ngIf="questions.length > 0 && currentStage === 'questions'"
   >
