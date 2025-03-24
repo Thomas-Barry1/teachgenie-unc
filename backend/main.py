@@ -85,7 +85,6 @@ async def gap_test(request: FormRequest):
    return {"test" : test}
 
 def ask_model(given_model, prompt):
-    print("Asking the following question to model: ", prompt)
     response = given_model.generate_content(prompt)
     
     # Only iterate 5 or more times if a bad response is received
@@ -104,7 +103,7 @@ def ask_model(given_model, prompt):
         returnResp = "Error in AI response, try again or change request."
     else:
         returnResp = response.text
-    print(f"***given_model Response:*** \nPrompt: {prompt}\nResponse:{returnResp}")
+    print(f"\n***Prompt:*** {prompt}\n***Response:{returnResp}***")
     return returnResp
 def categorize_question(given_question):
     prompt = f"What common core standard does this question belong to? {given_question}? Give the exactly ONE(NOT MORE THAN ONE) common core standard in the form like CCSS.3.MD.C.5.a or 3.NF.A.3."
@@ -112,7 +111,7 @@ def categorize_question(given_question):
     cleaned_up_category = re.findall(r"\b[A-Z0-9]+\.[A-Z]+\.[A-Z]+\.[0-9]+[a-z]?\b|\b[0-9]+[-.]?[A-Z]+[-.]?[A-Z]+[-.]?[0-9]?[a-z]?\b|\b[A-Z]+[-.]?[0-9]+[-.]?[A-Z]+[-.]?[0-9]?[-.]?[0-9]?\b|\b[0-9]?\.[A-Z]+\.[A-Z]?\.[0-9]?[a-z]?\b", category)
     if not cleaned_up_category:
         print("No category was assigned, so gonna regenerate")
-        prompt = f"The following question does not belong to a common core standard, but can you please give me a one word answer to how you can catagorize it (base it on the context of the question). Please make it exactly one word. Here is the question: {given_question}"
+        prompt = f"The following question does not belong to a common core standard, but can you please give a specific category (in 1-3 words max) based on the relevent subject area (e.g., 'Python Programming', 'Algebra', 'Physics', etc.). If possible, I do not want the subject area I just mentioned but I want to get a categorization inside a particular subject area. Here is the question: {given_question}"
         cleaned_up_category = ask_model(model, prompt)
     return cleaned_up_category
 
@@ -138,6 +137,8 @@ async def wrapper_gap_assessment(given_questions: List[Full_Question] ):
         correct_answer = question_iterator.question.correctAnswer
 
         category = categorize_question(question)
+        if isinstance(category, list): #in the case where multiple categories are assigned.
+            category = category[0]
         added_category_list.append({
             "question": question,
             "student_answer": student_answer,
@@ -153,7 +154,9 @@ async def wrapper_gap_assessment(given_questions: List[Full_Question] ):
             category = "unasssigned_category"
         else:
             category = item["category"]
-            
+
+        
+
         student_answer = item["student_answer"].strip().lower()
         correct_answer = item["correct_answer"].strip().lower()
 
@@ -271,7 +274,7 @@ async def generate_gap_assessment(extracted_information):
 
 
     #Ask for performance_summary
-    performance_summary_prompt = prompt + (f"Can you create performance summary for this student?\n")
+    performance_summary_prompt = prompt + (f"Can you create performance summary for this student? Do not mention the student name in your response. Just say 'this student'\n")
     performance_summary = ask_model(model, performance_summary_prompt)
     
     ##Ask for improvement_plan

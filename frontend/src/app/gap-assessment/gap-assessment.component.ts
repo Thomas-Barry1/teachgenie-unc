@@ -7,6 +7,7 @@ import { SafeHtml } from '@angular/platform-browser';
 import { Question } from '../shared/question.model';
 import { InlineGapAssessment } from '../shared/inline_gap_assessment.models';
 import { InlineGapAssessmentComponent } from '../inline-gap-assessment/inline-gap-assessment.component';
+import { Assessment } from '../shared/asssessment.model';
 
 @Component({
   selector: 'app-gap-assessment',
@@ -191,9 +192,9 @@ export class GapAssessmentComponent {
     this.generateStandards();
   }
 
-  finishTest(eventMessage: any) {
-    console.log('Received event from child:', eventMessage);
-    this.assessment = eventMessage.gap_assessment;
+  finishTest(assessment: Assessment) {
+    console.log('Received event from child:', assessment);
+    this.assessment = assessment.gap_assessment;
     this.testActive = false;
     this.testComplete = true;
   }

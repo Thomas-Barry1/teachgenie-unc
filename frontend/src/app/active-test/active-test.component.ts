@@ -5,6 +5,7 @@ import { Question } from '../shared/question.model';
 import { EventEmitter } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import { Full_Question } from '../shared/full_question.model';
+import { Assessment } from '../shared/asssessment.model';
 
 @Component({
   selector: 'app-active-test',
@@ -14,7 +15,7 @@ import { Full_Question } from '../shared/full_question.model';
   styleUrl: './active-test.component.css',
 })
 export class ActiveTestComponent {
-  @Output() taskCompleted = new EventEmitter<void>();
+  @Output() taskCompleted = new EventEmitter<Assessment>();
   @Input() questions: Question[] = [];
   currentQuestionIndex: number = 0;
   selectedAnswer: string | null = null;
@@ -26,7 +27,7 @@ export class ActiveTestComponent {
   //testStages = ['user-info', 'questions', 'completion'];
   currentStage = '';
   userInfoForm: FormGroup; // TO DO: connect user data to backend
-  assessment: any;
+  assessment?: Assessment;
 
   constructor(private fb: FormBuilder, private apiService: ApiService) {
     this.userInfoForm = this.fb.group({
