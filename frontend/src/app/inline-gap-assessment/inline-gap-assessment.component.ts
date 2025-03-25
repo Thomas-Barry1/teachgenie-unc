@@ -14,6 +14,8 @@ import { InlineGapAssessment } from '../shared/inline_gap_assessment.models';
 })
 export class InlineGapAssessmentComponent {
   @Input() assessment: InlineGapAssessment;
+  performanceSummary!: Promise<SafeHtml>;
+  improvementPlan!: Promise<SafeHtml>;
 
   constructor(private markdownService: MarkdownService) {
     // Placeholder assessment
@@ -52,10 +54,13 @@ export class InlineGapAssessmentComponent {
       improvementPlan:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     };
+    console.log("Constructor for inline gap assessment")
   }
 
   ngOnInit() {
     console.log("On init for inline gap assessment: ", this.assessment);
+    this.improvementPlan = this.convertMarkdown(this.assessment.improvementPlan);
+    this.performanceSummary = this.convertMarkdown(this.assessment.performanceSummary);
   }
 
   getMasteryStandards() {
@@ -65,6 +70,7 @@ export class InlineGapAssessmentComponent {
   }
 
   async convertMarkdown(bareMarkdown: string){
+    console.log("Start markdown in inline gap assessment");
     return await this.markdownService.convert(bareMarkdown);
   }
 
