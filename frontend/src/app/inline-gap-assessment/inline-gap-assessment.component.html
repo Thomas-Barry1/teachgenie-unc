@@ -1,6 +1,8 @@
 <mat-card class="mat-elevation-z8">
   <h2>Performance Summary</h2>
-  <strong>{{ this.assessment.performanceSummary }} </strong>
+  <div
+    [innerHTML]="convertMarkdown(this.assessment.performanceSummary) | async"
+  ></div>
 </mat-card>
 
 <div class="standard-column-container">

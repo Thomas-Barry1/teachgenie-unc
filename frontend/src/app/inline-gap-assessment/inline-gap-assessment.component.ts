@@ -15,7 +15,7 @@ import { InlineGapAssessment } from '../shared/inline_gap_assessment.models';
 export class InlineGapAssessmentComponent {
   @Input() assessment: InlineGapAssessment;
 
-  constructor() {
+  constructor(private markdownService: MarkdownService) {
     // Placeholder assessment
     this.assessment = {
       overallStrength: 'Moderate',
@@ -62,6 +62,10 @@ export class InlineGapAssessmentComponent {
     return this.assessment.standardsPerformance.filter(
       (standard) => standard.strength === 'Strong' || standard.strength === "strong"
     );
+  }
+
+  async convertMarkdown(bareMarkdown: string){
+    return await this.markdownService.convert(bareMarkdown);
   }
 
   getImprovementStandards() {
