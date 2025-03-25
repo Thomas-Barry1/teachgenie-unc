@@ -37,7 +37,7 @@
   <h1>{{ gapTestName }}</h1>
   <app-active-test
     [questions]="questions"
-    (taskCompleted)="finishTest('Finish Test')"
+    (taskCompleted)="finishTest($event)"
   ></app-active-test>
 </mat-card>
 
