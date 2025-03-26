@@ -1,4 +1,4 @@
-<mat-card class="mat-elevation-z8">
+<mat-card class="mat-elevation-z8" style="border-left: 4px solid #3f51b5">
   <h2>Performance Summary</h2>
   <div [innerHTML]="this.performanceSummary | async"></div>
 </mat-card>
@@ -46,3 +46,12 @@
     <div class="content" [innerHTML]="this.improvementPlan | async"></div>
   </mat-card>
 </div>
+
+<!-- Gap Analysis Chart -->
+<mat-card class="chart-container">
+  <div class="title-container">
+    <mat-icon>analytics</mat-icon>
+    <h2>Performance Chart</h2>
+  </div>
+  <canvas id="chart" style="margin: 20px; height: 50vh">{{ chart }}</canvas>
+</mat-card>
