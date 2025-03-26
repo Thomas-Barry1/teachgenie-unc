@@ -53,5 +53,15 @@
     <mat-icon>analytics</mat-icon>
     <h2>Performance Chart</h2>
   </div>
-  <canvas id="chart" style="margin: 20px; height: 50vh">{{ chart }}</canvas>
+  <canvas
+    id="chart"
+    style="
+      margin: 20px;
+      width: 100%;
+      max-width: 60vw;
+      max-height: 40vh;
+      min-height: 30vh;
+    "
+    >{{ chart }}</canvas
+  >
 </mat-card>
