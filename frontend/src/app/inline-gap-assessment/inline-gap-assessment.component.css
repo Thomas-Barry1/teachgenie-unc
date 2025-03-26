@@ -11,6 +11,7 @@ mat-card {
   flex-direction: row;
   gap: 20px;
   margin-top: 20px;
+  overflow: scroll;
 }
 
 .standard-column-mastery {
@@ -55,11 +56,16 @@ mat-card {
     }
   }
 }
+.standard-column-performance-summary{
+  overflow: scroll;
+
+}
 
 .standard-column-weakness {
   border-top: 4px solid #ef4242;
   width: 33%;
   height: 450px;
+  overflow: scroll;
 
   .title-container {
     display: flex;
@@ -108,6 +114,7 @@ mat-card {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  overflow: scroll;
 
   .title-container {
     display: flex;
