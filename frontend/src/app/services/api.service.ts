@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Full_Question } from '../shared/full_question.model';
+import { Question } from '../shared/question.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,11 +20,11 @@ export class ApiService {
     return this.http.post<any>(`${this.apiUrl}/test`, topic);
   }
 
-  generateGapAssessment(file: File | null) : Observable<any>{
-    console.log("Made it to frontend api service generate gap assessment: ", file);
-    return this.http.post<any>(`${this.apiUrl}/gap-assessment`, file);
+  generateGapAssessment(given_full_questions: Full_Question[]) : Observable<any>{
+    console.log("Made it to frontend api service generate gap assessment: ", given_full_questions);
+    return this.http.post<any>(`${this.apiUrl}/gap-assessment`, given_full_questions);
   }
-
+  
   generateGapTest(formData: any): Observable<any> {
     console.log("Made to api service generateGapTest: ", formData);
     return this.http.post<any>(`${this.apiUrl}/gap-test`, formData);

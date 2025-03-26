@@ -3,6 +3,9 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Question } from '../shared/question.model';
 import { EventEmitter } from '@angular/core';
+import { ApiService } from '../services/api.service';
+import { Full_Question } from '../shared/full_question.model';
+import { Assessment } from '../shared/asssessment.model';
 
 @Component({
   selector: 'app-active-test',
@@ -12,12 +15,11 @@ import { EventEmitter } from '@angular/core';
   styleUrl: './active-test.component.css',
 })
 export class ActiveTestComponent {
-  @Output() taskCompleted = new EventEmitter<void>();
+  @Output() taskCompleted = new EventEmitter<Assessment>();
   @Input() questions: Question[] = [];
   currentQuestionIndex: number = 0;
   selectedAnswer: string | null = null;
-  selectedAnswers: any[] = [];
-  correctAnswers: any[] = [];
+  selectedAnswers: Full_Question[] = [];
 
   @Input() numberOfQuestions: number = 0;
   timeRemaining: number = 1800; // TO DO: create formula that calculates time or add it as input
@@ -25,15 +27,16 @@ export class ActiveTestComponent {
   //testStages = ['user-info', 'questions', 'completion'];
   currentStage = '';
   userInfoForm: FormGroup; // TO DO: connect user data to backend
+  assessment?: Assessment;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private apiService: ApiService) {
     this.userInfoForm = this.fb.group({
       firstName: [''],
       lastName: [''],
       teacherCode: [''],
     });
     this.currentStage = 'user-info';
-    this.selectedAnswers = Array(this.numberOfQuestions).fill(null);
+    // this.selectedAnswers = Array(this.numberOfQuestions).fill(null);
   }
 
   onSubmitUserData() {
@@ -45,9 +48,20 @@ export class ActiveTestComponent {
     if (this.currentQuestionIndex < this.questions.length - 1) {
       this.currentQuestionIndex++;
       this.selectedAnswer = null;
+      console.log(this.selectedAnswers);
     } else {
+      //submitting
+      const send_data:Full_Question[] = this.selectedAnswers;
+      console.log("Sending this data to create gap_assessment:", send_data);
+      this.apiService.generateGapAssessment(send_data).subscribe({
+        next: async (response: any )=>{
+          console.log("Response from generating gap assessment", response);
+          this.assessment = response;
+          this.taskCompleted.emit(this.assessment);
+        }
+      })
+      
       this.currentStage = 'completion';
-      this.taskCompleted.emit();
     }
   }
 
@@ -60,7 +74,10 @@ export class ActiveTestComponent {
 
   selectAnswer(answer: string) {
     this.selectedAnswer = answer;
-    this.selectedAnswers[this.currentQuestionIndex] = this.selectedAnswer;
+    this.selectedAnswers[this.currentQuestionIndex] = {
+      question: this.questions[this.currentQuestionIndex],
+      selected_answer: this.selectedAnswer
+    };
     localStorage.setItem(
       'selectedAnswers',
       JSON.stringify(this.selectedAnswers)
@@ -89,5 +106,10 @@ export class ActiveTestComponent {
     localStorage.setItem('questions', JSON.stringify([]));
 
     console.log('Test Exited');
+  }
+  show(){
+    console.log(this.selectedAnswers); 
+    console.log(this.selectedAnswers.length);
+    console.log(this.questions.length);
   }
 }

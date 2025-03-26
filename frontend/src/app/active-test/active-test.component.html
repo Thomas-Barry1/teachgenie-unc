@@ -12,13 +12,26 @@
         <input matInput formControlName="lastName" />
       </mat-form-field>
 
-      <mat-form-field appearance="fill">
+      <!-- <mat-form-field appearance="fill">
         <mat-label>Teacher Code</mat-label>
         <input matInput formControlName="teacherCode" />
-      </mat-form-field>
+      </mat-form-field> -->
 
       <button mat-raised-button color="primary" type="submit">Submit</button>
     </form>
+  </div>
+
+  <div
+    *ngIf="questions.length === 0 && currentStage === 'questions'"
+    class="loading-container"
+  >
+    <mat-spinner></mat-spinner>
+    <p>Generating customized test ...</p>
+  </div>
+
+  <div *ngIf="currentStage === 'completion'" class="loading-container">
+    <mat-spinner></mat-spinner>
+    <p>Analyzing Results ...</p>
   </div>
 
   <div
@@ -39,7 +52,10 @@
       >
         <div
           class="circle"
-          [class.filled]="selectedAnswers[currentQuestionIndex] === option"
+          [class.filled]="
+            selectedAnswers[currentQuestionIndex] &&
+            selectedAnswers[currentQuestionIndex].selected_answer === option
+          "
         ></div>
         <p>{{ option }}</p>
       </div>
@@ -54,18 +70,22 @@
       >
         Back
       </button>
-      <!-- <button
+      <button
         mat-raised-button
         color="primary"
-        (click)="
-          currentQuestionIndex < questions.length - 1
-            ? nextQuestion()
-            : submitTest()
-        "
-      > -->
-
-      <button mat-raised-button color="primary" (click)="nextQuestion()">
-        {{ currentQuestionIndex < questions.length - 1 ? "Next" : "Submit" }}
+        (click)="nextQuestion()"
+        *ngIf="currentQuestionIndex < questions.length - 1"
+      >
+        {{ "Next" }}
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="nextQuestion()"
+        *ngIf="!(currentQuestionIndex < questions.length - 1)"
+        [disabled]="selectedAnswers.length < questions.length"
+      >
+        {{ "Submit" }}
       </button>
     </div>
   </div>

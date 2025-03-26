@@ -1,6 +1,6 @@
 <mat-card class="mat-elevation-z8">
   <h2>Performance Summary</h2>
-  <strong>{{ this.assessment.performanceSummary }} </strong>
+  <div [innerHTML]="this.performanceSummary | async"></div>
 </mat-card>
 
 <div class="standard-column-container">
@@ -43,8 +43,6 @@
       <mat-icon>trending_up</mat-icon>
       <h2>Improvement Plan</h2>
     </div>
-    <div class="content">
-      {{ this.assessment.improvementPlan }}
-    </div>
+    <div class="content" [innerHTML]="this.improvementPlan | async"></div>
   </mat-card>
 </div>

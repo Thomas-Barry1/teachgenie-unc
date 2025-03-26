@@ -5,17 +5,7 @@ import { StateService } from '../services/state.service';
 import { MarkdownService } from '../services/markdown.service';
 import { SafeHtml } from '@angular/platform-browser';
 import { Question } from '../shared/question.model';
-
-interface InlineGapAssessment {
-  overallStrength: 'Strong' | 'Moderate' | 'Weak' | null;
-  performanceSummary: string;
-  standardsPerformance: {
-    standard: string;
-    strength: 'Strong' | 'Moderate' | 'Weak' | null;
-    description: string;
-  }[];
-  improvementPlan: string;
-}
+import { InlineGapAssessment } from '../shared/inline_gap_assessment.models';
 
 @Component({
   selector: 'app-inline-gap-assessment',
@@ -24,8 +14,10 @@ interface InlineGapAssessment {
 })
 export class InlineGapAssessmentComponent {
   @Input() assessment: InlineGapAssessment;
+  performanceSummary!: Promise<SafeHtml>;
+  improvementPlan!: Promise<SafeHtml>;
 
-  constructor() {
+  constructor(private markdownService: MarkdownService) {
     // Placeholder assessment
     this.assessment = {
       overallStrength: 'Moderate',
@@ -62,22 +54,30 @@ export class InlineGapAssessmentComponent {
       improvementPlan:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
     };
+    console.log("Constructor for inline gap assessment")
   }
 
   ngOnInit() {
-    console.log(this.assessment);
+    console.log("On init for inline gap assessment: ", this.assessment);
+    this.improvementPlan = this.convertMarkdown(this.assessment.improvementPlan);
+    this.performanceSummary = this.convertMarkdown(this.assessment.performanceSummary);
   }
 
   getMasteryStandards() {
     return this.assessment.standardsPerformance.filter(
-      (standard) => standard.strength === 'Strong'
+      (standard) => standard.strength === 'Strong' || standard.strength === "strong"
     );
+  }
+
+  async convertMarkdown(bareMarkdown: string){
+    console.log("Start markdown in inline gap assessment");
+    return await this.markdownService.convert(bareMarkdown);
   }
 
   getImprovementStandards() {
     return this.assessment.standardsPerformance.filter(
       (standard) =>
-        standard.strength === 'Weak' || standard.strength === 'Moderate'
+        standard.strength === 'Weak' || standard.strength === 'Moderate' || standard.strength === "weak" || standard.strength === "moderate"
     );
   }
 }
