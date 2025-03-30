@@ -199,7 +199,7 @@ if not api_key:
 
 genai.configure(api_key=os.environ["API_KEY"])
 
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-2.0-flash-lite')
 
 async def generate_test(request: FormRequest):
     prompt = f"Write a test for a teacher on the topic '{request.topic}', and include answer key at end."
@@ -247,7 +247,7 @@ async def generate_test(request: FormRequest):
         returnResp = response.text
     return returnResp
 def get_new_model():
-    return genai.GenerativeModel('gemini-1.5-flash')
+    return genai.GenerativeModel('gemini-2.0-flash-lite')
 def filter_strength_response(response):
     valid_responses = ['strong', 'moderate', 'weak']
     response_text = response.strip().lower()

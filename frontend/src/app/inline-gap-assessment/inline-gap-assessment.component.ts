@@ -14,8 +14,15 @@ import { InlineGapAssessment } from '../shared/inline_gap_assessment.models';
 })
 export class InlineGapAssessmentComponent {
   @Input() assessment: InlineGapAssessment;
-  performanceSummary!: Promise<SafeHtml>;
-  improvementPlan!: Promise<SafeHtml>;
+  performanceSummary$!: Promise<SafeHtml>;
+  improvementPlan$!: Promise<SafeHtml>;
+  standards!: 
+  // {
+  //   standard: string;
+  //   strength: 'Strong' | 'Moderate' | 'Weak' | 'strong' | 'moderate' | 'weak' | null;
+  //   description: string;
+  // }
+  any[];
 
   constructor(private markdownService: MarkdownService) {
     // Placeholder assessment
@@ -59,14 +66,22 @@ export class InlineGapAssessmentComponent {
 
   ngOnInit() {
     console.log("On init for inline gap assessment: ", this.assessment);
-    this.improvementPlan = this.convertMarkdown(this.assessment.improvementPlan);
-    this.performanceSummary = this.convertMarkdown(this.assessment.performanceSummary);
+    this.improvementPlan$ = this.convertMarkdown(this.assessment.improvementPlan);
+    this.performanceSummary$ = this.convertMarkdown(this.assessment.performanceSummary);
+    this.standards = this.assessment.standardsPerformance.map(
+    ((standard) => {
+        return {
+        standard: standard.standard,
+        strength: standard.strength,
+        description: this.markdownService.convert(standard.description)
+        }
+      }))
   }
 
   getMasteryStandards() {
-    return this.assessment.standardsPerformance.filter(
-      (standard) => standard.strength === 'Strong' || standard.strength === "strong"
-    );
+    return this.standards.filter(
+      (predicate) => predicate.strength === 'Strong' || predicate.strength === "strong"
+    )
   }
 
   async convertMarkdown(bareMarkdown: string){
@@ -75,7 +90,7 @@ export class InlineGapAssessmentComponent {
   }
 
   getImprovementStandards() {
-    return this.assessment.standardsPerformance.filter(
+    return this.standards.filter(
       (standard) =>
         standard.strength === 'Weak' || standard.strength === 'Moderate' || standard.strength === "weak" || standard.strength === "moderate"
     );
