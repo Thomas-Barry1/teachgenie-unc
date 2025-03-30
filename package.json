@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@angular/flex-layout": "^15.0.0-beta.42",
+    "canvas-confetti": "^1.9.3",
     "dompurify": "^3.2.4",
     "express": "^4.19.2",
     "file-saver": "^2.0.5"
@@ -9,6 +10,7 @@
     "dompurify": "2.5.6"
   },
   "devDependencies": {
+    "@types/canvas-confetti": "^1.9.0",
     "@types/dompurify": "^3.2.0"
   }
 }

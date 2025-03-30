@@ -19,6 +19,10 @@
     margin-bottom: 10px;
 }
 
+.question-content {
+    padding-bottom: 10px; 
+}
+
 form {
     width: 100%;
     display: flex;
@@ -85,3 +89,21 @@ button {
     height: 100px;
     text-align: center;
   }
+
+.correct {
+color: green;
+font-weight: bold;
+margin-top: 10px;
+}
+
+.incorrect {
+    color: pink;
+    font-weight: bold; 
+    margin-top: 10px;
+}
+
+.feedback-container {
+    height: 20px; 
+    transition: all 0.3s ease;
+    margin-bottom: 20px; 
+}

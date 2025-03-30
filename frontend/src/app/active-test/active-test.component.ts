@@ -6,6 +6,8 @@ import { EventEmitter } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import { Full_Question } from '../shared/full_question.model';
 import { Assessment } from '../shared/asssessment.model';
+import * as confetti from 'canvas-confetti';
+
 
 @Component({
   selector: 'app-active-test',
@@ -20,6 +22,9 @@ export class ActiveTestComponent {
   currentQuestionIndex: number = 0;
   selectedAnswer: string | null = null;
   selectedAnswers: Full_Question[] = [];
+
+  feedbackMessage: string | null = null; 
+  isCorrect: boolean | null = null; 
 
   @Input() numberOfQuestions: number = 0;
   timeRemaining: number = 1800; // TO DO: create formula that calculates time or add it as input
@@ -74,10 +79,30 @@ export class ActiveTestComponent {
 
   selectAnswer(answer: string) {
     this.selectedAnswer = answer;
+    const currentQuestion = this.questions[this.currentQuestionIndex];
+    const isCorrect = answer == currentQuestion.correctAnswer; 
+
+    this.isCorrect = isCorrect; 
+    this.feedbackMessage = isCorrect ? 'Correct! You have earned 10 points.' : 'Incorrect. Try again!';
+    
+    
     this.selectedAnswers[this.currentQuestionIndex] = {
       question: this.questions[this.currentQuestionIndex],
       selected_answer: this.selectedAnswer
     };
+
+    if (isCorrect) {
+      // Play sound
+      const audio = new Audio('assets/correct.wav');
+      audio.play();
+  
+      // Trigger confetti
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+      });
+    }
     localStorage.setItem(
       'selectedAnswers',
       JSON.stringify(this.selectedAnswers)

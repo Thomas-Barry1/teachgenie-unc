@@ -61,6 +61,14 @@
       </div>
     </div>
 
+    <div class="feedback-container">
+    <div *ngIf="feedbackMessage"
+         [ngClass]="{ 'correct': isCorrect, 'incorrect': !isCorrect }">
+      {{ feedbackMessage }}
+    </div>
+  </div>
+    
+
     <div class="button-container">
       <button
         mat-raised-button
