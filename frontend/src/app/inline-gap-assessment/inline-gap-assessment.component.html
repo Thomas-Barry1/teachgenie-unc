@@ -1,6 +1,6 @@
 <mat-card class="mat-elevation-z8">
   <h2>Performance Summary</h2>
-  <div [innerHTML]="this.performanceSummary | async"></div>
+  <div [innerHTML]="this.performanceSummary$ | async"></div>
 </mat-card>
 
 <div class="standard-column-container">
@@ -16,8 +16,9 @@
       >
         <mat-icon>circle</mat-icon>
         <p>
-          <strong>{{ standard.standard }}: </strong> {{ standard.description }}
+          <strong>{{ standard.standard }}: </strong>
         </p>
+        <div [innerHTML]="standard.description | async"></div>
       </div>
     </div>
   </mat-card>
@@ -33,8 +34,9 @@
       >
         <mat-icon>circle</mat-icon>
         <p>
-          <strong>{{ standard.standard }}: </strong> {{ standard.description }}
+          <strong>{{ standard.standard }}: </strong>
         </p>
+        <div [innerHTML]="standard.description | async"></div>
       </div>
     </div>
   </mat-card>
@@ -43,6 +45,6 @@
       <mat-icon>trending_up</mat-icon>
       <h2>Improvement Plan</h2>
     </div>
-    <div class="content" [innerHTML]="this.improvementPlan | async"></div>
+    <div class="content" [innerHTML]="this.improvementPlan$ | async"></div>
   </mat-card>
 </div>
