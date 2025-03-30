@@ -8,15 +8,36 @@ mat-card {
 
 .standard-column-container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 20px;
   margin-top: 20px;
 }
 
+.chart-container {
+  height: fit-content;
+  width: 100%;
+  margin-top: 20px;
+  border-left: 4px solid #663399;
+
+  .title-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-direction: row;
+    color: #663399;
+
+    h2 {
+      color: #663399;
+      margin: 0;
+      padding: 0;
+    }
+  }
+}
+
 .standard-column-mastery {
-  border-top: 4px solid #1cc65d;
-  width: 33%;
-  height: 450px;
+  border-left: 4px solid #1cc65d;
+  width: 100%;
+  height: fit-content;
 
   .title-container {
     display: flex;
@@ -37,6 +58,7 @@ mat-card {
     flex-direction: column;
     gap: 10px;
     margin-top: 20px;
+    height: 100%;
 
     .standard-item {
       mat-icon {
@@ -57,9 +79,9 @@ mat-card {
 }
 
 .standard-column-weakness {
-  border-top: 4px solid #ef4242;
-  width: 33%;
-  height: 450px;
+  border-left: 4px solid #ef4242;
+  width: 100%;
+  height: fit-content;
 
   .title-container {
     display: flex;
@@ -101,9 +123,9 @@ mat-card {
 }
 
 .standard-column-improvement-plan {
-  border-top: 4px solid #3f51b5;
-  width: 33%;
-  height: 450px;
+  border-left: 4px solid #3f51b5;
+  width: 100%;
+  height: fit-content;
   text-wrap: wrap;
   display: flex;
   flex-direction: column;
