@@ -53,6 +53,7 @@ class StandardPerformance(BaseModel):
     standard: str
     strength: Optional[str]
     description: str
+    score: int
 
 class InlineGapAssessment(BaseModel):
     overallStrength: Optional[str]
@@ -311,13 +312,15 @@ async def generate_gap_assessment(extracted_information):
         standardsPerformance.append({
             "standard": category,
             "description": particular_description,
-            "strength": particular_strength
+            "strength": particular_strength,
+            "score": score
         })
     
     print(f"""overallStrength={overall_strength},performanceSummary={performance_summary}, standardsPerformance={standardsPerformance},  improvementPlan={improvement_plan}""")
     
     #I am running into validation errors herre 
     returnOverallGapAssessment = InlineGapAssessment( overallStrength=overall_strength, performanceSummary=performance_summary, standardsPerformance=standardsPerformance, improvementPlan=improvement_plan)
+    print("returnOverallGapAssessment: ", returnOverallGapAssessment)
     return returnOverallGapAssessment
 
 async def generate_standards(request: FormRequest):

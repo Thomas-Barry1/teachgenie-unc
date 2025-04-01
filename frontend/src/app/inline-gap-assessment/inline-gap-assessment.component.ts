@@ -84,6 +84,8 @@ export class InlineGapAssessmentComponent {
     this.dataSource.data = this.assessment.standardsPerformance.map((item) => ({
       standard: item.standard,
       performance: item.description,
+      score: item.score,
+      strength: item.strength,
     }));
 
     this.labels = this.assessment.standardsPerformance.map(
@@ -136,14 +138,8 @@ export class InlineGapAssessmentComponent {
           {
             label: 'Standards Performance',
             // Map strength to numeric value for visualization
-            data: this.assessment.standardsPerformance.map((standard) =>
-              standard.strength
-                ? standard.strength.toLowerCase() === 'strong'
-                  ? 100
-                  : standard.strength.toLowerCase() === 'moderate'
-                  ? 50
-                  : 1
-                : 1
+            data: this.assessment.standardsPerformance.map(
+              (standard) => standard.score
             ),
             backgroundColor: '#663399',
             borderWidth: 1,
