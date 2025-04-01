@@ -80,6 +80,17 @@ export class InlineGapAssessmentComponent {
     this.performanceSummary = this.convertMarkdown(
       this.assessment.performanceSummary
     );
+    
+    this.standards = this.assessment.standardsPerformance.map(
+    ((standard) => {
+        return {
+        standard: standard.standard,
+        strength: standard.strength,
+        description: this.markdownService.convert(standard.description),
+        score: standard.score
+        }
+      }))
+  }
 
     this.dataSource.data = this.assessment.standardsPerformance.map((item) => ({
       standard: item.standard,
@@ -103,10 +114,9 @@ export class InlineGapAssessmentComponent {
   }
 
   getMasteryStandards() {
-    return this.assessment.standardsPerformance.filter(
-      (standard) =>
-        standard.strength === 'Strong' || standard.strength === 'strong'
-    );
+    return this.standards.filter(
+      (predicate) => predicate.strength === 'Strong' || predicate.strength === "strong"
+    )
   }
 
   async convertMarkdown(bareMarkdown: string) {
@@ -115,7 +125,7 @@ export class InlineGapAssessmentComponent {
   }
 
   getImprovementStandards() {
-    return this.assessment.standardsPerformance.filter(
+    return this.standards.filter(
       (standard) =>
         standard.strength === 'Weak' ||
         standard.strength === 'Moderate' ||
