@@ -1,11 +1,18 @@
 mat-card {
   margin: 20px;
   padding: 20px;
+  min-width: 50vw;
 }
 
 .gap-assessment-container {
   margin: 20px;
   padding: 20px;
+}
+
+.test-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 mat-form-field {

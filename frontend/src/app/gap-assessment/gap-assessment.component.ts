@@ -59,27 +59,7 @@ export class GapAssessmentComponent {
           standard: 'K.OA.A.1',
           strength: 'Strong',
           description: 'Understanding addition and subtraction within 5',
-        },
-        {
-          standard: '4.NF.A.1',
-          strength: 'Strong',
-          description: 'Understanding equivalent fractions',
-        },
-        {
-          standard: '3.OA.A.7',
-          strength: 'Strong',
-          description: 'Multiplying and dividing numbers less than 100',
-        },
-        {
-          standard: '3.MD.C.5',
-          strength: 'Weak',
-          description:
-            'Understands concepts of area and relating area to multiplication and addition',
-        },
-        {
-          standard: '5.0A.A.2',
-          strength: 'Weak',
-          description: 'Writing and interpreting numerical expressions',
+          score: 100,
         },
       ],
       improvementPlan:
