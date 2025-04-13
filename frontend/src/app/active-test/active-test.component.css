@@ -21,6 +21,8 @@
 
 .question-content {
     padding-bottom: 10px; 
+    height: 175px;
+    overflow-y: auto;
 }
 
 form {

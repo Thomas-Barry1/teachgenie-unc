@@ -16,7 +16,7 @@ import { Assessment } from '../shared/asssessment.model';
   styleUrl: './gap-assessment.component.css',
 })
 export class GapAssessmentComponent {
-  selectedFile: File | null = null;
+  //selectedFile: File | null = null;
   gapTestForm: FormGroup<any>;
   gapTest: SafeHtml = '';
   gapTestName: String = '';
@@ -87,12 +87,12 @@ export class GapAssessmentComponent {
     };
   }
 
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.selectedFile = input.files[0];
-    }
-  }
+  // onFileSelected(event: Event) {
+  //   const input = event.target as HTMLInputElement;
+  //   if (input.files && input.files.length > 0) {
+  //     this.selectedFile = input.files[0];
+  //   }
+  // }
   // createGapAssessment() {
   //   console.log('Sending to backend');
   //   this.apiService.generateGapAssessment(this.selectedFile).subscribe({

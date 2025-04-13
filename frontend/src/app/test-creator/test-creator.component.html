@@ -1,6 +1,6 @@
-<mat-card>
+<mat-card *ngIf="!testActive && !testComplete">
   <h2>Create Test</h2>
-  <form [formGroup]="testForm" (ngSubmit)="generateTest()">
+  <form [formGroup]="testForm">
     <mat-form-field appearance="fill">
       <mat-label>Topic</mat-label>
       <input matInput formControlName="topic" />
@@ -12,11 +12,22 @@
       [showQuestionTypes]="true"
     ></app-form-options>
 
-    <button mat-raised-button color="primary" type="submit">
-      Generate Test
-    </button>
+    <div class="buttons">
+      <button id="button-space" mat-raised-button color="primary" type="button" (click)="generateTest()">
+        Generate Test
+      </button>
+      <button mat-raised-button color="primary" type="button" (click)="beginTest()">
+        Take Test
+      </button>
+    </div>
   </form>
-
+  <mat-card id="test" *ngIf="testActive">
+    <h1>{{ testName }}</h1>
+    <app-active-test
+      [questions]="questions"
+      (taskCompleted)="finishTest()"
+    ></app-active-test>
+  </mat-card>
   <div *ngIf="loading" class="loading-container">
     <mat-spinner></mat-spinner>
     <p>Generating test, please wait...</p>
@@ -30,8 +41,8 @@
       (input)="onContentChange($event)"
     ></div>
     <div *ngIf="test">
+      <!-- [contentToPrint]="testString" was below -->
       <app-print-button
-        [contentToPrint]="testString"
         [enablePdf]="true"
         [enableTextFile]="false"
         [enableClipboard]="true"

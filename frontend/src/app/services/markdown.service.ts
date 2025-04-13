@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import * as marked from 'marked'
-import * as DOMPurify from 'dompurify';
+//import * as DOMPurify from 'dompurify';
+import * as DOMPurify from 'dompurify' 
 
 @Injectable({
   providedIn: 'root'

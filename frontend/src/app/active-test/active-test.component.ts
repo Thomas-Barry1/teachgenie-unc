@@ -34,6 +34,8 @@ export class ActiveTestComponent {
   userInfoForm: FormGroup; // TO DO: connect user data to backend
   assessment?: Assessment;
 
+  totalPoints: number = 0; 
+
   constructor(private fb: FormBuilder, private apiService: ApiService) {
     this.userInfoForm = this.fb.group({
       firstName: [''],
@@ -50,6 +52,7 @@ export class ActiveTestComponent {
   }
 
   nextQuestion() {
+    this.feedbackMessage = null;
     if (this.currentQuestionIndex < this.questions.length - 1) {
       this.currentQuestionIndex++;
       this.selectedAnswer = null;
@@ -95,13 +98,7 @@ export class ActiveTestComponent {
       // Play sound
       const audio = new Audio('assets/correct.wav');
       audio.play();
-  
-      // Trigger confetti
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-      });
+      this.totalPoints += 10
     }
     localStorage.setItem(
       'selectedAnswers',
@@ -132,6 +129,7 @@ export class ActiveTestComponent {
 
     console.log('Test Exited');
   }
+
   show(){
     console.log(this.selectedAnswers); 
     console.log(this.selectedAnswers.length);

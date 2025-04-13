@@ -14,6 +14,14 @@ mat-card {
   h2 {
     color: #3f51b5;
   }
+
+  .buttons {
+    gap: space-between;
+  }
+
+  #button-space {
+    margin-right: 30px;
+  }
   
   .loading-container {
     display: flex;
