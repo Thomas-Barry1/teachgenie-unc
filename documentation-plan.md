@@ -46,3 +46,21 @@ ng serve
 `
 
 Both servers are now running and the web app is running locally on `localhost:3000` or `localhost:4200`, depending on operating systems.
+
+## Testing
+
+To run the tests in the `test_gap_test.py` file, make sure you have followed all the steps to get the backend running first. 
+
+Enter the following command to download the pytest library: 
+
+`
+pip install pytest
+`
+
+Enter the following command to run the tests: 
+
+`
+PYTHONPATH=backend pytest backend/tests -v
+`
+
+
