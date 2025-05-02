@@ -1,8 +1,14 @@
 {
   "dependencies": {
     "@angular/flex-layout": "^15.0.0-beta.42",
-    "dompurify": "^3.1.5",
+    "dompurify": "^3.2.4",
     "express": "^4.19.2",
     "file-saver": "^2.0.5"
+  },
+  "resolutions": {
+    "dompurify": "2.5.6"
+  },
+  "devDependencies": {
+    "@types/dompurify": "^3.2.0"
   }
 }

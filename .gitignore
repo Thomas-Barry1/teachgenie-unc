@@ -4,4 +4,5 @@
 .venv/*
 # Stores secrets of google credentials
 google-auth*
-*.db
+*.db__pycache__/
+node_modules/
