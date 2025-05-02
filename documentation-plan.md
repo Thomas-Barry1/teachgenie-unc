@@ -57,7 +57,7 @@ Enter the following command to download the pytest library:
 pip install pytest
 `
 
-Enter the following command to run the tests: 
+First, navigate to the root directory. Then, enter the following command to run the tests: 
 
 `
 PYTHONPATH=backend pytest backend/tests -v
